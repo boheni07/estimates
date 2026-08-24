@@ -37,6 +37,22 @@ services:
     ports:
       - "3300:3000"
 
+  # 3. Prisma Studio (Web Database GUI)
+  studio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: estimate-studio
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://estimate_user:estimate_password@db:5432/estimate_db?schema=public
+    ports:
+      - "5555:5555"
+    entrypoint: ["./node_modules/.bin/prisma", "studio", "--port", "5555", "--browser", "none", "--hostname", "0.0.0.0"]
+
 volumes:
   estimate_pgdata:
     driver: local

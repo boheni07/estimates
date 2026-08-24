@@ -54,7 +54,8 @@ docker compose ps
 docker compose logs -f app
 ```
 
-- **웹 애플리케이션 접속**: `http://localhost:3300` (또는 지정 포트)
+- **웹 애플리케이션 접속**: `http://localhost:3300` (견적 관리 시스템 메인)
+- **웹 DB 관리자 (Prisma Studio)**: `http://localhost:5555` (브라우저에서 DB 테이블 조회/수정/삭제 GUI)
 - **PostgreSQL 접속**: `localhost:5432` (User: `estimate_user`, Password: `estimate_password`, DB: `estimate_db`)
 
 ---
