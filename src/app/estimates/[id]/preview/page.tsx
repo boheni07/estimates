@@ -26,6 +26,13 @@ export default function EstimatePreviewPage({ params }: { params: { id: string }
           setRateNoticeInfo(settingsData.rateNoticeInfo);
         }
         setLoading(false);
+
+        // 열람 감사 로그 기록
+        fetch(`/api/estimates/${params.id}/log`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'VIEW' }),
+        }).catch(() => {});
       })
       .catch((err) => {
         console.error(err);

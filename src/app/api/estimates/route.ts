@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { calculateEstimate } from '@/lib/calculator';
+import { getSessionUser } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 // 견적서 목록 조회
 export async function GET(request: Request) {
@@ -30,6 +33,15 @@ export async function GET(request: Request) {
     const estimates = await prisma.estimate.findMany({
       where,
       include: {
+        author: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            department: true,
+            position: true,
+          },
+        },
         project: {
           include: {
             company: true,
@@ -49,6 +61,7 @@ export async function GET(request: Request) {
 // 견적서 신규 생성
 export async function POST(request: Request) {
   try {
+    const sessionUser = await getSessionUser(request);
     const body = await request.json();
     const {
       projectId,
@@ -95,6 +108,7 @@ export async function POST(request: Request) {
     const estimate = await prisma.estimate.create({
       data: {
         projectId,
+        authorId: sessionUser?.id || null,
         estimateNumber,
         version: 1.0,
         title,

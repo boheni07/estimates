@@ -168,6 +168,7 @@ export default function EstimatesPage() {
               <thead>
                 <tr className="bg-slate-50 text-slate-600 text-xs font-semibold border-b border-slate-200">
                   <th className="py-3 px-4">견적번호 / 버전</th>
+                  <th className="py-3 px-4">작성자 (담당직원)</th>
                   <th className="py-3 px-4">고객사 및 프로젝트</th>
                   <th className="py-3 px-4">견적서 제목</th>
                   <th className="py-3 px-4 text-right">총 공급가액</th>
@@ -186,11 +187,11 @@ export default function EstimatesPage() {
                         <div className="flex items-center gap-1.5">
                           <Link
                             href={`/estimates/${est.id}/edit`}
-                            className="font-mono text-xs font-bold text-blue-600 hover:underline"
+                            className="font-mono text-xs font-bold text-indigo-600 hover:underline"
                           >
                             {est.estimateNumber}
                           </Link>
-                          <span className="text-[11px] font-bold bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-mono border border-blue-200">
+                          <span className="text-[11px] font-bold bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono border border-indigo-200">
                             v{est.version.toFixed(1)}
                           </span>
                         </div>
@@ -198,6 +199,18 @@ export default function EstimatesPage() {
                           <div className="text-[11px] text-slate-400 mt-0.5 max-w-[180px] truncate" title={est.changeReason}>
                             ↳ {est.changeReason}
                           </div>
+                        )}
+                      </td>
+
+                      <td className="py-3.5 px-4">
+                        {est.author ? (
+                          <div className="text-xs">
+                            <span className="font-bold text-slate-800">{est.author.name}</span>
+                            <span className="text-slate-500 ml-1">({est.author.position})</span>
+                            <div className="text-[10px] text-slate-400">{est.author.department}</div>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-slate-400">-</span>
                         )}
                       </td>
 

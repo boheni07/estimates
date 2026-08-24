@@ -43,6 +43,25 @@ export async function GET(
 
     const excelBuffer = await generateEstimateExcel(estimate as unknown as EstimateType, supplierInfo);
 
+    // 엑셀 다운로드 감사 로그 기록
+    try {
+      const { getSessionUser } = await import('@/lib/auth');
+      const sessionUser = await getSessionUser(request);
+      await prisma.estimateViewLog.create({
+        data: {
+          estimateId: params.id,
+          userId: sessionUser?.id || null,
+          userName: sessionUser?.name || '비로그인 사용자',
+          userDept: sessionUser ? `${sessionUser.department} ${sessionUser.position}` : null,
+          action: 'EXCEL',
+          ipAddress: request.headers.get('x-forwarded-for') || null,
+          userAgent: request.headers.get('user-agent') || null,
+        },
+      });
+    } catch (logErr) {
+      console.error('Failed to log excel download:', logErr);
+    }
+
     const filename = encodeURIComponent(
       `견적서_${estimate.estimateNumber}_v${estimate.version.toFixed(1)}_${estimate.project?.company?.name || '공급'}.xlsx`
     );

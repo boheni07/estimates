@@ -1,8 +1,65 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('Seeding initial master data...');
+
+  // 0. 초기 시스템 관리자 및 직원 계정 생성
+  const defaultPasswordHash = await bcrypt.hash('password', 10);
+
+  const adminUser = await prisma.user.upsert({
+    where: { username: 'admin' },
+    update: {
+      password: defaultPasswordHash,
+      role: 'ADMIN',
+      name: '시스템 관리자',
+      department: '경영기획실',
+      position: '시스템관리자',
+      email: 'admin@company.com',
+      phone: '02-555-7890',
+    },
+    create: {
+      username: 'admin',
+      password: defaultPasswordHash,
+      role: 'ADMIN',
+      name: '시스템 관리자',
+      department: '경영기획실',
+      position: '시스템관리자',
+      email: 'admin@company.com',
+      phone: '02-555-7890',
+    },
+  });
+
+  const userHong = await prisma.user.upsert({
+    where: { username: 'hong' },
+    update: {},
+    create: {
+      username: 'hong',
+      password: defaultPasswordHash,
+      role: 'USER',
+      name: '홍길동',
+      department: '사업개발팀',
+      position: '팀장',
+      email: 'hong@company.com',
+      phone: '010-1111-2222',
+    },
+  });
+
+  const userKim = await prisma.user.upsert({
+    where: { username: 'kim' },
+    update: {},
+    create: {
+      username: 'kim',
+      password: defaultPasswordHash,
+      role: 'USER',
+      name: '김수석',
+      department: 'SI개발팀',
+      position: '수석엔지니어',
+      email: 'kim@company.com',
+      phone: '010-3333-4444',
+    },
+  });
 
   // 1. KOSA 표준 노임단가 설정
   const standardRates = [
@@ -134,11 +191,12 @@ async function main() {
     },
   });
 
-  // 5. 샘플 견적서 생성 (v1.0 & v1.1)
+  // 7. 샘플 견적서 생성 (v1.0 & v1.1)
   // v1.0
   const estimate1 = await prisma.estimate.create({
     data: {
       projectId: project1.id,
+      authorId: userHong.id,
       estimateNumber: 'EST-20260824-001',
       version: 1.0,
       title: '차세대 FDS 및 대시보드 구축 초기 견적서 (초안)',
@@ -195,6 +253,7 @@ async function main() {
     data: {
       projectId: project1.id,
       parentEstimateId: estimate1.id,
+      authorId: userHong.id,
       estimateNumber: 'EST-20260824-001',
       version: 1.1,
       title: '차세대 FDS 및 대시보드 구축 견적서 (고객사 네고 반영)',

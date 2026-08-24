@@ -10,12 +10,17 @@ import {
   FolderKanban, 
   Settings, 
   FilePlus2,
-  Calculator
+  Calculator,
+  Users,
+  ShieldAlert,
+  ShieldCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const navItems = [
     { href: '/', label: '대시보드', icon: LayoutDashboard },
@@ -26,11 +31,16 @@ export default function Sidebar() {
     { href: '/settings', label: '기준단가 / 공급자설정', icon: Settings },
   ];
 
+  const adminNavItems = [
+    { href: '/users', label: '직원(사용자) 관리', icon: Users },
+    { href: '/audit-logs', label: '열람 감사 로그', icon: ShieldAlert },
+  ];
+
   return (
     <aside className="w-64 bg-slate-900 text-slate-200 min-h-screen flex flex-col flex-shrink-0 border-r border-slate-800 no-print">
       {/* Brand Header */}
       <div className="h-16 flex items-center px-6 gap-3 border-b border-slate-800 bg-slate-950/60">
-        <div className="p-2 bg-blue-600 rounded-lg text-white shadow-md shadow-blue-500/20">
+        <div className="p-2 bg-indigo-600 rounded-lg text-white shadow-md shadow-indigo-500/20">
           <Calculator className="w-5 h-5" />
         </div>
         <div>
@@ -53,7 +63,7 @@ export default function Sidebar() {
               className={cn(
                 'flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all',
                 (item.href === '/' ? isExact : isActive)
-                  ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30 font-semibold'
+                  ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30 font-semibold'
                   : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/70'
               )}
             >
@@ -62,6 +72,36 @@ export default function Sidebar() {
             </Link>
           );
         })}
+
+        {/* 시스템 관리자 전용 섹션 */}
+        {user?.role === 'ADMIN' && (
+          <div className="pt-4 mt-4 border-t border-slate-800/80">
+            <div className="px-3 pb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-indigo-400">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>시스템 관리자 전용</span>
+            </div>
+            {adminNavItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href || pathname.startsWith(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all',
+                    isActive
+                      ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30 font-semibold'
+                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/70'
+                  )}
+                >
+                  <Icon className={cn('w-4 h-4', isActive ? 'text-white' : 'text-slate-400')} />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </nav>
 
       {/* Bottom Info */}

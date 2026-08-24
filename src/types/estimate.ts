@@ -1,5 +1,34 @@
 export type EstimateStatus = 'DRAFT' | 'REVIEW' | 'SENT' | 'WON' | 'LOST' | 'CANCELED';
 export type ProjectStatus = 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD';
+export type UserRole = 'ADMIN' | 'USER';
+
+export interface UserType {
+  id: string;
+  username: string;
+  name: string;
+  department: string;
+  position: string;
+  phone?: string | null;
+  email?: string | null;
+  role: UserRole;
+  isActive?: boolean;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+}
+
+export interface EstimateViewLogType {
+  id: string;
+  estimateId: string;
+  userId?: string | null;
+  user?: UserType | null;
+  userName: string;
+  userDept?: string | null;
+  action: 'VIEW' | 'PRINT' | 'EXCEL' | 'EDIT_ATTEMPT';
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  createdAt: string | Date;
+  estimate?: EstimateType;
+}
 
 export interface CompanyType {
   id: string;
@@ -80,6 +109,8 @@ export interface EstimateType {
   id: string;
   projectId: string;
   project?: ProjectType;
+  authorId?: string | null;
+  author?: UserType | null;
   estimateNumber: string;
   version: number;
   parentEstimateId?: string | null;
