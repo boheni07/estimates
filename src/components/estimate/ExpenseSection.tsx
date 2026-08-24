@@ -65,26 +65,26 @@ export default function ExpenseSection({ expenses, onChange }: ExpenseSectionPro
           등록된 직접경비 실비 항목이 없습니다. (선택사항)
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
+        <div className="overflow-x-auto -mx-6 px-6">
+          <table className="w-full text-left text-sm border-collapse min-w-[650px]">
             <thead>
               <tr className="bg-slate-50 text-slate-600 text-xs font-semibold border-y border-slate-200">
                 <th className="py-2.5 px-3 w-10 text-center">No</th>
-                <th className="py-2.5 px-3 w-48">경비 구분</th>
+                <th className="py-2.5 px-3 w-44">경비 구분</th>
                 <th className="py-2.5 px-3 min-w-[200px]">산출 내역 및 적요</th>
-                <th className="py-2.5 px-3 w-40 text-right">금액 (원)</th>
+                <th className="py-2.5 px-3 w-36 text-right">금액 (원)</th>
                 <th className="py-2.5 px-3 w-10 text-center">삭제</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 font-medium">
               {expenses.map((item, idx) => (
                 <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                  <td className="py-2 px-3 text-center text-xs text-slate-400 font-medium">{idx + 1}</td>
-                  <td className="py-2 px-3">
+                  <td className="py-2.5 px-3 text-center text-xs text-slate-400 font-mono">{idx + 1}</td>
+                  <td className="py-2.5 px-3">
                     <select
                       value={item.category}
                       onChange={(e) => handleChange(idx, 'category', e.target.value)}
-                      className="w-full px-2 py-1.5 text-xs border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white"
+                      className="w-full px-2 py-1.5 text-xs font-medium border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                     >
                       {DEFAULT_EXPENSE_CATEGORIES.map((cat) => (
                         <option key={cat} value={cat}>
@@ -93,28 +93,28 @@ export default function ExpenseSection({ expenses, onChange }: ExpenseSectionPro
                       ))}
                     </select>
                   </td>
-                  <td className="py-2 px-3">
+                  <td className="py-2.5 px-3">
                     <input
                       type="text"
                       value={item.description}
                       onChange={(e) => handleChange(idx, 'description', e.target.value)}
                       placeholder="산출 근거 (예: 지방 출장 4회, 보고서 인쇄 10부)"
-                      className="w-full px-2.5 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      className="w-full px-2.5 py-1.5 text-xs font-medium border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                     />
                   </td>
-                  <td className="py-2 px-3 text-right">
+                  <td className="py-2.5 px-3 text-right">
                     <FormattedNumberInput
                       value={item.amount}
                       onChange={(val) => handleChange(idx, 'amount', val)}
                       placeholder="0"
-                      className="w-full text-right px-2 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500 font-mono"
+                      className="w-full text-right px-2 py-1.5 text-xs font-bold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono bg-white"
                     />
                   </td>
-                  <td className="py-2 px-3 text-center">
+                  <td className="py-2.5 px-3 text-center">
                     <button
                       type="button"
                       onClick={() => handleRemove(idx)}
-                      className="p-1 text-slate-400 hover:text-rose-500 rounded transition-colors"
+                      className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                       title="삭제"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -124,11 +124,11 @@ export default function ExpenseSection({ expenses, onChange }: ExpenseSectionPro
               ))}
             </tbody>
             <tfoot>
-              <tr className="bg-amber-50/50 font-semibold text-slate-900 border-t border-amber-100">
-                <td colSpan={3} className="py-3 px-4 text-left">
+              <tr className="bg-amber-50/60 font-semibold text-slate-900 border-t border-amber-100 text-xs">
+                <td colSpan={3} className="py-3 px-4 text-left font-bold text-amber-900">
                   직접경비 합계
                 </td>
-                <td className="py-3 px-3 text-right font-mono text-amber-700 text-base">
+                <td className="py-3 px-3 text-right font-mono text-amber-700 text-sm font-bold">
                   ₩{formatCurrency(totalExpenseCost)}
                 </td>
                 <td></td>

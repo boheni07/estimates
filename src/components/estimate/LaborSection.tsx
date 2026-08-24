@@ -102,37 +102,37 @@ export default function LaborSection({ labors, onChange, standardRates, rateNoti
           투입할 SW 개발 인력 정보가 없습니다. [인력 추가] 버튼을 눌러 추가하세요.
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
+        <div className="overflow-x-auto -mx-6 px-6">
+          <table className="w-full text-left text-sm border-collapse min-w-[700px]">
             <thead>
               <tr className="bg-slate-50 text-slate-600 text-xs font-semibold border-y border-slate-200">
-                <th className="py-2.5 px-3 w-12 text-center">No</th>
-                <th className="py-2.5 px-3 min-w-[140px]">담당 역할/직무</th>
-                <th className="py-2.5 px-3 min-w-[150px]">기술 등급</th>
+                <th className="py-2.5 px-3 w-10 text-center">No</th>
+                <th className="py-2.5 px-3 min-w-[130px]">담당 역할/직무</th>
+                <th className="py-2.5 px-3 min-w-[160px]">기술 등급</th>
                 <th className="py-2.5 px-3 w-28 text-right">투입공수 (M/M)</th>
                 <th className="py-2.5 px-3 w-36 text-right">월 노임단가 (원)</th>
                 <th className="py-2.5 px-3 w-40 text-right">직접인건비 (원)</th>
                 <th className="py-2.5 px-3 w-12 text-center">삭제</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 font-medium">
               {labors.map((item, idx) => (
                 <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                  <td className="py-2 px-3 text-center text-xs text-slate-400 font-medium">{idx + 1}</td>
-                  <td className="py-2 px-3">
+                  <td className="py-2.5 px-3 text-center text-xs text-slate-400 font-mono">{idx + 1}</td>
+                  <td className="py-2.5 px-3">
                     <input
                       type="text"
                       value={item.role}
                       onChange={(e) => handleChange(idx, 'role', e.target.value)}
-                      placeholder="예: PM, 백엔드개발, UI기획"
-                      className="w-full px-2.5 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 font-medium"
+                      placeholder="예: PM, 백엔드개발"
+                      className="w-full px-2.5 py-1.5 text-xs font-medium border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
                     />
                   </td>
-                  <td className="py-2 px-3">
+                  <td className="py-2.5 px-3">
                     <select
                       value={item.grade}
                       onChange={(e) => handleChange(idx, 'grade', e.target.value)}
-                      className="w-full px-2.5 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
+                      className="w-full px-2 py-1.5 text-xs font-medium border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
                     >
                       {standardRates.map((r) => (
                         <option key={r.grade} value={r.grade}>
@@ -144,32 +144,32 @@ export default function LaborSection({ labors, onChange, standardRates, rateNoti
                       )}
                     </select>
                   </td>
-                  <td className="py-2 px-3 text-right">
+                  <td className="py-2.5 px-3 text-right">
                     <input
                       type="number"
                       step="0.05"
                       min="0"
                       value={item.manMonths}
                       onChange={(e) => handleChange(idx, 'manMonths', parseFloat(e.target.value) || 0)}
-                      className="w-full text-right px-2.5 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono"
+                      className="w-full text-right px-2 py-1.5 text-xs font-bold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono bg-white"
                     />
                   </td>
-                  <td className="py-2 px-3 text-right">
+                  <td className="py-2.5 px-3 text-right">
                     <FormattedNumberInput
                       value={item.unitPrice}
                       onChange={(val) => handleChange(idx, 'unitPrice', val)}
                       placeholder="0"
-                      className="w-full text-right px-2.5 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono"
+                      className="w-full text-right px-2 py-1.5 text-xs font-bold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono bg-white"
                     />
                   </td>
-                  <td className="py-2 px-3 text-right font-semibold text-slate-800 font-mono">
+                  <td className="py-2.5 px-3 text-right font-bold text-slate-900 font-mono text-xs">
                     ₩{formatCurrency(item.totalPrice)}
                   </td>
-                  <td className="py-2 px-3 text-center">
+                  <td className="py-2.5 px-3 text-center">
                     <button
                       type="button"
                       onClick={() => handleRemove(idx)}
-                      className="p-1 text-slate-400 hover:text-rose-500 rounded transition-colors"
+                      className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                       title="삭제"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -179,15 +179,15 @@ export default function LaborSection({ labors, onChange, standardRates, rateNoti
               ))}
             </tbody>
             <tfoot>
-              <tr className="bg-indigo-50/50 font-semibold text-slate-900 border-t border-indigo-100">
-                <td colSpan={3} className="py-3 px-4 text-left">
+              <tr className="bg-indigo-50/60 font-semibold text-slate-900 border-t border-indigo-100 text-xs">
+                <td colSpan={3} className="py-3 px-4 text-left font-bold text-indigo-900">
                   직접인건비 소계
                 </td>
-                <td className="py-3 px-3 text-right font-mono text-indigo-700">
+                <td className="py-3 px-3 text-right font-mono font-bold text-indigo-700">
                   {totalMM.toFixed(2)} M/M
                 </td>
                 <td></td>
-                <td className="py-3 px-3 text-right font-mono text-indigo-700 text-base">
+                <td className="py-3 px-3 text-right font-mono text-indigo-700 text-sm font-bold">
                   ₩{formatCurrency(totalLaborCost)}
                 </td>
                 <td></td>

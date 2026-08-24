@@ -298,10 +298,10 @@ export default function EditEstimatePage({ params }: { params: { id: string } })
         </div>
       )}
 
-      {/* Main Form Body (2 Cols Layout) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Main Items Editor */}
-        <div className="lg:col-span-2 space-y-6">
+      {/* Main Form Body: Wide Left Editor + Slim Compact Right Summary Panel */}
+      <div className="flex flex-col xl:flex-row gap-6 items-start">
+        {/* Left: Main Items Editor (Spacious, No Cutoffs) */}
+        <div className="flex-1 min-w-0 w-full space-y-6">
           {/* 견적서 제목 수정 바 */}
           <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
             <label className="block text-xs font-bold text-slate-700 mb-1.5">
@@ -311,7 +311,7 @@ export default function EditEstimatePage({ params }: { params: { id: string } })
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-2.5 text-sm font-semibold border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 text-sm font-semibold border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white"
             />
           </div>
 
@@ -336,7 +336,7 @@ export default function EditEstimatePage({ params }: { params: { id: string } })
           />
 
           {/* Section 4: 결제조건 및 특이사항 */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
             <h3 className="font-bold text-slate-800 text-base">결제조건 및 계약 메모</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -347,7 +347,7 @@ export default function EditEstimatePage({ params }: { params: { id: string } })
                   type="date"
                   value={validUntil}
                   onChange={(e) => setValidUntil(e.target.value)}
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-lg focus:ring-1 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white"
                 />
               </div>
 
@@ -360,7 +360,7 @@ export default function EditEstimatePage({ params }: { params: { id: string } })
                   value={paymentTerms}
                   onChange={(e) => setPaymentTerms(e.target.value)}
                   placeholder="예: 계약체결 시 선금 40%, 잔금 60%"
-                  className="w-full p-2.5 text-xs border border-slate-300 rounded-lg focus:ring-1 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white"
                 />
               </div>
             </div>
@@ -374,14 +374,14 @@ export default function EditEstimatePage({ params }: { params: { id: string } })
                 onChange={(e) => setRemarks(e.target.value)}
                 rows={3}
                 placeholder="고객사 요구사항 및 특약사항을 기재하세요."
-                className="w-full p-2.5 text-xs border border-slate-300 rounded-lg focus:ring-1 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white"
               />
             </div>
           </div>
         </div>
 
-        {/* Right 1 Col: Live Rate & Summary Card */}
-        <div className="lg:col-span-1">
+        {/* Right: Slim & Compact 1-Row Rate Summary Panel */}
+        <div className="w-full xl:w-72 2xl:w-80 flex-shrink-0">
           <CalculationSummaryCard
             calculation={calculation}
             overheadRate={overheadRate}
