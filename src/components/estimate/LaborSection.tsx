@@ -103,16 +103,16 @@ export default function LaborSection({ labors, onChange, standardRates, rateNoti
         </div>
       ) : (
         <div className="overflow-x-auto -mx-6 px-6">
-          <table className="w-full text-left text-sm border-collapse min-w-[700px]">
+          <table className="w-full text-left text-sm border-collapse min-w-[660px]">
             <thead>
               <tr className="bg-slate-50 text-slate-600 text-xs font-semibold border-y border-slate-200">
                 <th className="py-2.5 px-3 w-10 text-center">No</th>
-                <th className="py-2.5 px-3 min-w-[130px]">담당 역할/직무</th>
-                <th className="py-2.5 px-3 min-w-[160px]">기술 등급</th>
-                <th className="py-2.5 px-3 w-28 text-right">투입공수 (M/M)</th>
-                <th className="py-2.5 px-3 w-36 text-right">월 노임단가 (원)</th>
-                <th className="py-2.5 px-3 w-40 text-right">직접인건비 (원)</th>
-                <th className="py-2.5 px-3 w-12 text-center">삭제</th>
+                <th className="py-2.5 px-3 min-w-[180px]">담당 역할 / 직무</th>
+                <th className="py-2.5 px-3 w-36">기술 등급</th>
+                <th className="py-2.5 px-2 w-20 text-right">공수(M/M)</th>
+                <th className="py-2.5 px-2 w-28 text-right">월 노임단가(원)</th>
+                <th className="py-2.5 px-3 w-32 text-right">직접인건비(원)</th>
+                <th className="py-2.5 px-3 w-10 text-center">삭제</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium">
@@ -124,19 +124,19 @@ export default function LaborSection({ labors, onChange, standardRates, rateNoti
                       type="text"
                       value={item.role}
                       onChange={(e) => handleChange(idx, 'role', e.target.value)}
-                      placeholder="예: PM, 백엔드개발"
-                      className="w-full px-2.5 py-1.5 text-xs font-medium border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                      placeholder="예: 프로젝트 총괄 PM, 백엔드 개발, UI 기획"
+                      className="w-full px-3 py-1.5 text-xs font-bold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-800"
                     />
                   </td>
                   <td className="py-2.5 px-3">
                     <select
                       value={item.grade}
                       onChange={(e) => handleChange(idx, 'grade', e.target.value)}
-                      className="w-full px-2 py-1.5 text-xs font-medium border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                      className="w-full px-2 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700"
                     >
                       {standardRates.map((r) => (
                         <option key={r.grade} value={r.grade}>
-                          {r.grade} (월 ₩{formatCurrency(r.monthlyRate)})
+                          {r.grade}
                         </option>
                       ))}
                       {!standardRates.some((r) => r.grade === item.grade) && (
@@ -144,7 +144,7 @@ export default function LaborSection({ labors, onChange, standardRates, rateNoti
                       )}
                     </select>
                   </td>
-                  <td className="py-2.5 px-3 text-right">
+                  <td className="py-2.5 px-2 text-right">
                     <input
                       type="number"
                       step="0.05"
@@ -154,7 +154,7 @@ export default function LaborSection({ labors, onChange, standardRates, rateNoti
                       className="w-full text-right px-2 py-1.5 text-xs font-bold border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono bg-white"
                     />
                   </td>
-                  <td className="py-2.5 px-3 text-right">
+                  <td className="py-2.5 px-2 text-right">
                     <FormattedNumberInput
                       value={item.unitPrice}
                       onChange={(val) => handleChange(idx, 'unitPrice', val)}
@@ -183,7 +183,7 @@ export default function LaborSection({ labors, onChange, standardRates, rateNoti
                 <td colSpan={3} className="py-3 px-4 text-left font-bold text-indigo-900">
                   직접인건비 소계
                 </td>
-                <td className="py-3 px-3 text-right font-mono font-bold text-indigo-700">
+                <td className="py-3 px-2 text-right font-mono font-bold text-indigo-700">
                   {totalMM.toFixed(2)} M/M
                 </td>
                 <td></td>
