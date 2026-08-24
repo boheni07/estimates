@@ -19,7 +19,38 @@ async function main() {
     create: { key: 'STANDARD_RATES', value: JSON.stringify(standardRates), description: 'KOSA 표준 노임단가' },
   });
 
-  // 2. 자사 공급자 정보 설정
+  // 2. KOSA 노임단가 공고 정보 메타데이터
+  const rateNoticeInfo = {
+    noticeName: '2024년 적용 SW기술자 평균임금 공표 (SW엔지니어링 노임단가)',
+    noticeNumber: '한국소프트웨어산업협회 공고 제2023-01호',
+    announcedDate: '2023-12-15',
+    effectivePeriod: '2024년 1월 1일 ~ 차기 공표일까지',
+    surveyPeriod: '2023년 5월 ~ 6월 실적 기준',
+    approvalNumber: '통계청 국가승인통계 제375001호',
+    workDaysPerMonth: 20.83,
+  };
+
+  await prisma.masterSetting.upsert({
+    where: { key: 'RATE_NOTICE_INFO' },
+    update: { value: JSON.stringify(rateNoticeInfo) },
+    create: { key: 'RATE_NOTICE_INFO', value: JSON.stringify(rateNoticeInfo), description: 'SW기술자 노임단가 공고 메타데이터' },
+  });
+
+  // 3. 4대 기본 견적 요율 설정 (제경비 110%, 기술료 20%, 이윤 25%, VAT 10%)
+  const defaultRates = {
+    overheadRate: 110.0,
+    technicalRate: 20.0,
+    profitRate: 25.0,
+    vatRate: 10.0,
+  };
+
+  await prisma.masterSetting.upsert({
+    where: { key: 'DEFAULT_RATES' },
+    update: { value: JSON.stringify(defaultRates) },
+    create: { key: 'DEFAULT_RATES', value: JSON.stringify(defaultRates), description: '기본 견적 4대 요율' },
+  });
+
+  // 4. 자사 공급자 정보 설정
   const supplierInfo = {
     companyName: '(주)안티그래비티소프트웨어',
     businessNumber: '123-86-45678',
@@ -38,7 +69,14 @@ async function main() {
     create: { key: 'SUPPLIER_INFO', value: JSON.stringify(supplierInfo), description: '자사 공급자 정보' },
   });
 
-  // 3. 샘플 고객사 생성
+  // 기존에 회사가 이미 있으면 샘플 생성 스킵
+  const existingCompanyCount = await prisma.company.count();
+  if (existingCompanyCount > 0) {
+    console.log('Master settings updated and existing companies preserved.');
+    return;
+  }
+
+  // 5. 샘플 고객사 생성
   const company1 = await prisma.company.create({
     data: {
       name: '(주)한국글로벌파이낸스',
@@ -63,13 +101,18 @@ async function main() {
     },
   });
 
-  // 4. 샘플 프로젝트 생성
+  // 6. 샘플 프로젝트 생성 (프로젝트별 담당부서 및 담당자 포함)
   const project1 = await prisma.project.create({
     data: {
       companyId: company1.id,
       title: '차세대 실시간 이상금융거래탐지(FDS) 및 대시보드 구축',
       description: '실시간 스트리밍 데이터 기반 이상 금융거래 모니터링 시스템 및 관리자 웹 콘솔 구축',
       status: 'IN_PROGRESS',
+      clientDept: '디지털혁신팀',
+      clientManager: '박상혁',
+      clientPosition: '팀장',
+      clientPhone: '010-9876-5432',
+      clientEmail: 'park@kgfinance.co.kr',
       startDate: new Date('2026-09-01'),
       endDate: new Date('2026-12-31'),
     },
@@ -81,6 +124,11 @@ async function main() {
       title: 'AI 기반 개인화 상품 추천 엔진 & 모바일 쇼핑몰 고도화',
       description: 'LLM 및 벡터 검색 기반 추천 시스템과 모바일 웹앱 리뉴얼 개발',
       status: 'PLANNING',
+      clientDept: 'IT기획부',
+      clientManager: '이지은',
+      clientPosition: '수석',
+      clientPhone: '010-1234-5678',
+      clientEmail: 'jieun@nextretail.com',
       startDate: new Date('2026-10-01'),
       endDate: new Date('2027-02-28'),
     },

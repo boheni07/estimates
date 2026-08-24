@@ -1,0 +1,42 @@
+services:
+  # 1. PostgreSQL 16 Database
+  db:
+    image: postgres:16-alpine
+    container_name: estimate-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: estimate_user
+      POSTGRES_PASSWORD: estimate_password
+      POSTGRES_DB: estimate_db
+      TZ: Asia/Seoul
+    ports:
+      - "5432:5432"
+    volumes:
+      - estimate_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U estimate_user -d estimate_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Next.js Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: estimate-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://estimate_user:estimate_password@db:5432/estimate_db?schema=public
+      PORT: 3000
+      NODE_ENV: production
+      TZ: Asia/Seoul
+    ports:
+      - "3300:3000"
+
+volumes:
+  estimate_pgdata:
+    driver: local

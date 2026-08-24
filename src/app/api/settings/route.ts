@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { DEFAULT_STANDARD_RATES, DEFAULT_SUPPLIER_INFO, DEFAULT_ESTIMATE_RATES, DEFAULT_RATE_NOTICE_INFO } from '@/lib/defaultRates';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const settings = await prisma.masterSetting.findMany();

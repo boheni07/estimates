@@ -35,29 +35,49 @@
 
 - **Frontend**: Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS, Lucide React
 - **Backend**: Next.js Route Handlers (REST API), Prisma ORM
-- **Database**: SQLite (개발/단일 배포 최적화)
+- **Database**: PostgreSQL 16 (도커 컨테이너 및 볼륨 영속화)
+- **Container / Infra**: Docker Multi-stage Standalone Build, Docker Compose
 - **Document / Export**: ExcelJS (다중 시트 스타일링 엑셀), CSS Print Media Query (표준 A4 인쇄)
 
 ---
 
-## 🚀 시작하기 (Getting Started)
+## 🐳 Docker로 원클릭 실행하기 (Recommended)
+
+Docker와 Docker Compose만 설치되어 있으면 PostgreSQL DB와 Next.js 서버가 한 번에 빌드 및 구동됩니다.
+
+```bash
+# 1. 컨테이너 빌드 및 백그라운드 실행
+docker compose up -d --build
+
+# 2. 컨테이너 상태 및 로그 확인
+docker compose ps
+docker compose logs -f app
+```
+
+- **웹 애플리케이션 접속**: `http://localhost:3300` (또는 지정 포트)
+- **PostgreSQL 접속**: `localhost:5432` (User: `estimate_user`, Password: `estimate_password`, DB: `estimate_db`)
+
+---
+
+## 💻 로컬 개발 환경에서 실행하기 (Local Development)
 
 ### 1. 패키지 설치
-\\\ash
+```bash
 npm install
-\\\
+```
 
-### 2. 데이터베이스 마이그레이션 & 초기 시드 데이터 생성
-\\\ash
+### 2. 데이터베이스 설정 (.env)
+```env
+DATABASE_URL="postgresql://estimate_user:estimate_password@localhost:5432/estimate_db?schema=public"
+```
+
+### 3. 스키마 동기화 & 시드 데이터 주입
+```bash
 npx prisma db push
 node prisma/seed.js
-\\\
+```
 
-### 3. 개발 서버 실행
-\\\ash
+### 4. 개발 서버 실행
+```bash
 npm run dev
-# 또는 빌드 후 실행
-npm run build
-npm start
-\\\
-브라우저에서 \http://localhost:3000\ (또는 지정 포트)으로 접속합니다.
+```
