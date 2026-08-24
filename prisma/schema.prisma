@@ -1,0 +1,148 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 고객사 (거래처)
+model Company {
+  id             String    @id @default(cuid())
+  name           String
+  businessNumber String?   // 사업자등록번호
+  ceoName        String?   // 대표자명
+  address        String?   // 주소
+  contactPerson  String?   // 담당자명
+  contactEmail   String?   // 담당자 이메일
+  contactPhone   String?   // 담당자 연락처
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  projects       Project[]
+}
+
+// 프로젝트
+model Project {
+  id              String     @id @default(cuid())
+  companyId       String
+  company         Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  title           String
+  description     String?
+  status          String     @default("IN_PROGRESS") // PLANNING, IN_PROGRESS, COMPLETED, ON_HOLD
+  startDate       DateTime?
+  endDate         DateTime?
+  
+  // 프로젝트별 고객사(발주처) 담당자 연락망
+  clientDept      String?    // 담당 부서 (예: 디지털혁신팀, IT기획부)
+  clientManager   String?    // 담당자명 (예: 김철수)
+  clientPosition  String?    // 직급/직책 (예: 팀장, 수석, 매니저)
+  clientPhone     String?    // 담당자 전화번호/연락처
+  clientEmail     String?    // 담당자 이메일
+  
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  estimates       Estimate[]
+}
+
+// 견적서 메인
+model Estimate {
+  id                String            @id @default(cuid())
+  projectId         String
+  project           Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  estimateNumber    String            // ex) EST-20260824-001
+  version           Float             @default(1.0)
+  parentEstimateId  String?           // 이전 버전 ID
+  title             String            // 견적서 제목
+  status            String            @default("DRAFT") // DRAFT, REVIEW, SENT, WON, LOST, CANCELED
+  
+  // 요율 설정 (%)
+  overheadRate      Float             @default(110.0) // 제경비율 (기본 110%)
+  technicalRate     Float             @default(20.0)  // 기술료율 (기본 20%)
+  profitRate        Float             @default(0.0)   // 이윤율 (선택)
+  discountAmount    Float             @default(0.0)   // 특별 할인 금액
+  vatRate           Float             @default(10.0)  // 부가세율 (10%)
+  
+  // 계산된 집계 필드
+  totalLaborCost    Float             @default(0.0)   // 직접인건비 합계
+  totalOverheadCost Float             @default(0.0)   // 제경비 합계
+  totalTechCost     Float             @default(0.0)   // 기술료 합계
+  totalExpenseCost  Float             @default(0.0)   // 직접경비 합계
+  totalDevService   Float             @default(0.0)   // SW용역 공급가액 (인건비+제경비+기술료+직접경비)
+  totalItemsCost    Float             @default(0.0)   // 물품/솔루션 공급가액
+  totalSupplyPrice  Float             @default(0.0)   // 총 공급가액
+  totalVat          Float             @default(0.0)   // 총 부가세
+  grandTotal        Float             @default(0.0)   // 최종 합계 (공급가액 + 부가세)
+  
+  validUntil        DateTime?         // 견적 유효기간
+  paymentTerms      String?           // 대금지급조건
+  remarks           String?           // 특이사항/비고
+  changeReason      String?           // 버전 변경 사유
+  
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  labors            EstimateLabor[]
+  items             EstimateItem[]
+  expenses          EstimateExpense[]
+  histories         EstimateHistory[]
+}
+
+// SW개발 투입인력 (직접인건비)
+model EstimateLabor {
+  id          String   @id @default(cuid())
+  estimateId  String
+  estimate    Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+  role        String   // 역할/업무 (PM, 백엔드개발, UI/UX 등)
+  grade       String   // 기술등급 (특급, 고급, 중급, 초급)
+  manMonths   Float    // 투입공수 (M/M)
+  unitPrice   Float    // 월 기준 노임단가
+  totalPrice  Float    // 합계 (manMonths * unitPrice)
+  sortOrder   Int      @default(0)
+}
+
+// 물품 및 패키지 SW
+model EstimateItem {
+  id           String   @id @default(cuid())
+  estimateId   String
+  estimate     Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+  category     String   // 하드웨어, 소프트웨어, 라이선스, 기타
+  name         String   // 품목명
+  spec         String?  // 규격/사양
+  unit         String   @default("EA") // 단위 (EA, Set, Copy, 식 등)
+  quantity     Float    @default(1)
+  unitPrice    Float    @default(0)
+  discountRate Float    @default(0) // 할인율 (%)
+  totalPrice   Float    @default(0) // quantity * unitPrice * (1 - discountRate/100)
+  sortOrder    Int      @default(0)
+}
+
+// 직접경비 (실비)
+model EstimateExpense {
+  id          String   @id @default(cuid())
+  estimateId  String
+  estimate    Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+  category    String   // 여비교통비, 인쇄비, 장비임차료, 통신회선비 등
+  description String   // 산출내역/적요
+  amount      Float    @default(0)
+  sortOrder   Int      @default(0)
+}
+
+// 견적 변경 이력 로그
+model EstimateHistory {
+  id          String   @id @default(cuid())
+  estimateId  String
+  estimate    Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+  action      String   // CREATED, VERSION_UP, STATUS_CHANGE, EDITED
+  description String
+  createdAt   DateTime @default(now())
+}
+
+// 기준 노임단가 및 설정 마스터
+model MasterSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String   // JSON string
+  description String?
+  updatedAt   DateTime @updatedAt
+}
