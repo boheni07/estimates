@@ -70,13 +70,15 @@ export const DEFAULT_SUPPLIER_INFO: CompanySupplierInfo = {
 };
 
 /**
- * 기본 견적 4대 요율 설정값 (제경비, 기술료, 이윤, 부가가치세)
+ * 기본 견적 요율 및 계약 조건 설정값 (제경비, 기술료, 이윤, 부가가치세, 결제조건, 비고)
  */
 export const DEFAULT_ESTIMATE_RATES = {
   overheadRate: 110.0,  // (1) 제경비율: 직접인건비의 110% (110%~120%)
   technicalRate: 20.0,  // (2) 기술료율: (직접인건비 + 제경비)의 20% (20%~40%)
   profitRate: 25.0,     // (3) 이윤율: 개발원가(인건비+제경비+기술료)의 25% (25% 이내)
   vatRate: 10.0,        // (4) 부가가치세율: 공급가액의 10%
+  paymentTerms: '계약금 40%, 중도금 30%, 잔금 30% (검수완료 후)',
+  remarks: '본 견적서는 발행일로부터 30일간 유효합니다.',
 };
 
 /**

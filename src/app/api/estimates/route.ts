@@ -63,14 +63,33 @@ export async function POST(request: Request) {
   try {
     const sessionUser = await getSessionUser(request);
     const body = await request.json();
+
+    // DB 마스터 기본 요율 설정 조회
+    const defaultRatesSetting = await prisma.masterSetting.findUnique({
+      where: { key: 'DEFAULT_RATES' },
+    });
+    let dbDefaultRates = {
+      overheadRate: 110.0,
+      technicalRate: 20.0,
+      profitRate: 0.0,
+      vatRate: 10.0,
+    };
+    if (defaultRatesSetting?.value) {
+      try {
+        dbDefaultRates = JSON.parse(defaultRatesSetting.value);
+      } catch (e) {
+        console.error('Failed to parse default rates setting:', e);
+      }
+    }
+
     const {
       projectId,
       title,
-      overheadRate = 110,
-      technicalRate = 20,
-      profitRate = 0,
+      overheadRate = dbDefaultRates.overheadRate,
+      technicalRate = dbDefaultRates.technicalRate,
+      profitRate = dbDefaultRates.profitRate,
       discountAmount = 0,
-      vatRate = 10,
+      vatRate = dbDefaultRates.vatRate,
       validUntil,
       paymentTerms,
       remarks,
@@ -85,11 +104,11 @@ export async function POST(request: Request) {
 
     // 금액 계산 수행
     const calc = calculateEstimate(labors, items, expenses, {
-      overheadRate,
-      technicalRate,
-      profitRate,
-      discountAmount,
-      vatRate,
+      overheadRate: Number(overheadRate),
+      technicalRate: Number(technicalRate),
+      profitRate: Number(profitRate),
+      discountAmount: Number(discountAmount),
+      vatRate: Number(vatRate),
     });
 
     // 견적서 번호 채번 (EST-YYYYMMDD-랜덤/일련번호)

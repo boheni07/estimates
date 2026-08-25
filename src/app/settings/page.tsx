@@ -607,6 +607,39 @@ export default function SettingsPage() {
               </div>
             </div>
           </div>
+
+          {/* 추가: 기본 계약 조건 및 비고 설정 */}
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4 mt-6">
+            <h4 className="font-bold text-slate-800 text-sm border-b border-slate-200/80 pb-2">
+              기본 계약 조건 및 공통 안내사항
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  기본 대금 지급 조건 (결제조건)
+                </label>
+                <input
+                  type="text"
+                  value={defaultRates.paymentTerms || ''}
+                  onChange={(e) => setDefaultRates({ ...defaultRates, paymentTerms: e.target.value })}
+                  placeholder="예: 계약금 40%, 중도금 30%, 잔금 30% (검수완료 후)"
+                  className="w-full p-2.5 text-xs border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  기본 견적서 비고사항 / 유효기간 안내
+                </label>
+                <input
+                  type="text"
+                  value={defaultRates.remarks || ''}
+                  onChange={(e) => setDefaultRates({ ...defaultRates, remarks: e.target.value })}
+                  placeholder="예: 본 견적서는 발행일로부터 30일간 유효합니다."
+                  className="w-full p-2.5 text-xs border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

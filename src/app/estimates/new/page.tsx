@@ -29,7 +29,16 @@ export default function NewEstimatePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // 1. 고객사 목록 로드
+  // DB 마스터 설정 상태 (기준 정보 연동)
+  const [masterRates, setMasterRates] = useState({
+    overheadRate: 110.0,
+    technicalRate: 20.0,
+    profitRate: 0.0,
+    vatRate: 10.0,
+  });
+  const [masterStandardRates, setMasterStandardRates] = useState<any[]>([]);
+
+  // 1. 고객사 목록 및 DB 마스터 설정 로드
   useEffect(() => {
     fetch('/api/companies')
       .then((res) => res.json())
@@ -39,6 +48,30 @@ export default function NewEstimatePage() {
           setSelectedCompanyId(data[0].id);
         }
       });
+
+    // DB에 저장된 마스터 설정(기본 요율 및 노임단가) 그대로 가져오기
+    fetch('/api/settings')
+      .then((res) => res.json())
+      .then((settings) => {
+        if (settings.defaultRates) {
+          setMasterRates({
+            overheadRate: Number(settings.defaultRates.overheadRate) || 110.0,
+            technicalRate: Number(settings.defaultRates.technicalRate) || 20.0,
+            profitRate: Number(settings.defaultRates.profitRate) || 0.0,
+            vatRate: Number(settings.defaultRates.vatRate) || 10.0,
+          });
+          if (settings.defaultRates.paymentTerms) {
+            setPaymentTerms(settings.defaultRates.paymentTerms);
+          }
+          if (settings.defaultRates.remarks) {
+            setRemarks(settings.defaultRates.remarks);
+          }
+        }
+        if (settings.standardRates && Array.isArray(settings.standardRates)) {
+          setMasterStandardRates(settings.standardRates);
+        }
+      })
+      .catch((err) => console.error('Failed to load master settings:', err));
   }, []);
 
   // 2. 고객사 선택 시 해당 고객사의 프로젝트 목록 로드
@@ -100,7 +133,17 @@ export default function NewEstimatePage() {
         throw new Error('견적서 제목을 입력해주세요.');
       }
 
-      // 견적서 생성 API 호출 (기본 SW인력 템플릿 포함)
+      // DB 마스터 노임단가표에서 등급별 최신 단가 매핑
+      const getUnitPriceByGrade = (gradeName: string, fallback: number) => {
+        const found = masterStandardRates.find((r) => r.grade === gradeName || r.grade.includes(gradeName));
+        return found?.monthlyRate || fallback;
+      };
+
+      const pmPrice = getUnitPriceByGrade('총괄관리자', 11500000);
+      const highPrice = getUnitPriceByGrade('고급기술자', 7980000);
+      const midPrice = getUnitPriceByGrade('중급기술자', 6250000);
+
+      // 견적서 생성 API 호출 (DB에 저장된 마스터 요율 및 노임단가 그대로 반영)
       const res = await fetch('/api/estimates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -109,13 +152,14 @@ export default function NewEstimatePage() {
           title,
           paymentTerms,
           remarks,
-          overheadRate: 110.0,
-          technicalRate: 20.0,
-          vatRate: 10.0,
+          overheadRate: masterRates.overheadRate,
+          technicalRate: masterRates.technicalRate,
+          profitRate: masterRates.profitRate,
+          vatRate: masterRates.vatRate,
           labors: [
-            { role: '프로젝트 총괄/PM', grade: '총괄관리자(PM)', manMonths: 1.0, unitPrice: 11500000, totalPrice: 11500000 },
-            { role: '백엔드/시스템 개발', grade: '고급기술자', manMonths: 1.0, unitPrice: 7980000, totalPrice: 7980000 },
-            { role: '프론트엔드/UI 개발', grade: '중급기술자', manMonths: 1.0, unitPrice: 6250000, totalPrice: 6250000 },
+            { role: '프로젝트 총괄/PM', grade: '총괄관리자(PM)', manMonths: 1.0, unitPrice: pmPrice, totalPrice: pmPrice },
+            { role: '백엔드/시스템 개발', grade: '고급기술자', manMonths: 1.0, unitPrice: highPrice, totalPrice: highPrice },
+            { role: '프론트엔드/UI 개발', grade: '중급기술자', manMonths: 1.0, unitPrice: midPrice, totalPrice: midPrice },
           ],
         }),
       });
