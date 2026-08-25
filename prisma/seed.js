@@ -3,23 +3,22 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Seeding initial master data...');
+  // 이미 사용자가 있거나 마스터 설정이 존재하면 절대 덮어쓰지 않고 즉시 종료
+  const existingUserCount = await prisma.user.count();
+  const existingSettingCount = await prisma.masterSetting.count();
 
-  // 0. 초기 시스템 관리자 및 직원 계정 생성
+  if (existingUserCount > 0 || existingSettingCount > 0) {
+    console.log('==> Database already contains data. Skipping seed to protect real data.');
+    return;
+  }
+
+  console.log('Seeding initial master data for fresh database only...');
+
+  // 0. 최초 1회 시스템 관리자 계정 생성 (최초 설치 시에만)
   const defaultPasswordHash = await bcrypt.hash('password', 10);
 
-  const adminUser = await prisma.user.upsert({
-    where: { username: 'admin' },
-    update: {
-      password: defaultPasswordHash,
-      role: 'ADMIN',
-      name: '시스템 관리자',
-      department: '경영기획실',
-      position: '시스템관리자',
-      email: 'admin@company.com',
-      phone: '02-555-7890',
-    },
-    create: {
+  await prisma.user.create({
+    data: {
       username: 'admin',
       password: defaultPasswordHash,
       role: 'ADMIN',
@@ -28,36 +27,6 @@ async function main() {
       position: '시스템관리자',
       email: 'admin@company.com',
       phone: '02-555-7890',
-    },
-  });
-
-  const userHong = await prisma.user.upsert({
-    where: { username: 'hong' },
-    update: {},
-    create: {
-      username: 'hong',
-      password: defaultPasswordHash,
-      role: 'USER',
-      name: '홍길동',
-      department: '사업개발팀',
-      position: '팀장',
-      email: 'hong@company.com',
-      phone: '010-1111-2222',
-    },
-  });
-
-  const userKim = await prisma.user.upsert({
-    where: { username: 'kim' },
-    update: {},
-    create: {
-      username: 'kim',
-      password: defaultPasswordHash,
-      role: 'USER',
-      name: '김수석',
-      department: 'SI개발팀',
-      position: '수석엔지니어',
-      email: 'kim@company.com',
-      phone: '010-3333-4444',
     },
   });
 
