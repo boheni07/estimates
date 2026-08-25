@@ -163,19 +163,16 @@ export default function EstimatesPage() {
             </div>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse min-w-[1280px]">
+          <div className="w-full overflow-hidden">
+            <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-50/90 text-slate-600 text-[11px] font-bold border-b border-slate-200 uppercase tracking-tight">
-                  <th className="py-3 px-3.5 whitespace-nowrap w-44">견적번호 / 버전</th>
-                  <th className="py-3 px-3.5 whitespace-nowrap w-40">작성자 (담당직원)</th>
-                  <th className="py-3 px-3.5 whitespace-nowrap min-w-[220px]">고객사 및 프로젝트</th>
-                  <th className="py-3 px-3.5 whitespace-nowrap min-w-[240px]">견적서 제목</th>
-                  <th className="py-3 px-3.5 text-right whitespace-nowrap w-36">총 공급가액</th>
-                  <th className="py-3 px-3.5 text-right whitespace-nowrap w-40">최종합계 (VAT포함)</th>
-                  <th className="py-3 px-3.5 text-center whitespace-nowrap w-28">진행상태</th>
-                  <th className="py-3 px-3.5 text-center whitespace-nowrap w-28">발행일자</th>
-                  <th className="py-3 px-4 text-center whitespace-nowrap w-44">관리</th>
+                  <th className="py-3 px-3.5 w-40 whitespace-nowrap">견적번호 / 버전</th>
+                  <th className="py-3 px-3.5 min-w-[280px]">견적서 제목 / 고객사 및 프로젝트</th>
+                  <th className="py-3 px-3.5 text-right w-44 whitespace-nowrap">견적 금액 (VAT포함 / 공급가)</th>
+                  <th className="py-3 px-3.5 w-32 whitespace-nowrap">담당자 / 발행일</th>
+                  <th className="py-3 px-3.5 text-center w-24 whitespace-nowrap">진행상태</th>
+                  <th className="py-3 px-3.5 text-center w-36 whitespace-nowrap">관리</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -183,9 +180,9 @@ export default function EstimatesPage() {
                   const badge = getStatusBadge(est.status);
                   return (
                     <tr key={est.id} className="hover:bg-blue-50/30 transition-colors group">
-                      {/* 견적번호 / 버전 */}
-                      <td className="py-3.5 px-3.5 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5">
+                      {/* 1. 견적번호 / 버전 */}
+                      <td className="py-3 px-3.5 align-middle">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           <Link
                             href={`/estimates/${est.id}/edit`}
                             className="font-mono text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline"
@@ -196,83 +193,81 @@ export default function EstimatesPage() {
                             v{est.version.toFixed(1)}
                           </span>
                         </div>
-                        {est.changeReason && (
-                          <div className="text-[11px] text-slate-400 mt-0.5 max-w-[170px] truncate font-sans" title={est.changeReason}>
+                        {est.changeReason ? (
+                          <div className="text-[11px] text-slate-400 mt-0.5 truncate max-w-[150px]" title={est.changeReason}>
                             ↳ {est.changeReason}
                           </div>
-                        )}
-                      </td>
-
-                      {/* 작성자 (담당직원) */}
-                      <td className="py-3.5 px-3.5 whitespace-nowrap">
-                        {est.author ? (
-                          <div>
-                            <div className="font-semibold text-slate-800 text-xs">
-                              {est.author.name}
-                              <span className="text-slate-500 font-normal text-[11px] ml-1">({est.author.position})</span>
-                            </div>
-                            <div className="text-[11px] text-slate-400">{est.author.department}</div>
-                          </div>
                         ) : (
-                          <span className="text-xs text-slate-400">-</span>
+                          <div className="text-[10px] text-slate-400 mt-0.5 font-mono">
+                            ID: {est.id.slice(-6)}
+                          </div>
                         )}
                       </td>
 
-                      {/* 고객사 및 프로젝트 */}
-                      <td className="py-3.5 px-3.5">
-                        <div className="font-bold text-slate-900 text-xs flex items-center gap-1.5 whitespace-nowrap">
-                          <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                          <span className="truncate max-w-[200px]" title={est.project?.company?.name || ''}>
-                            {est.project?.company?.name || '-'}
+                      {/* 2. 견적서 제목(1줄) / 고객사 및 프로젝트(2줄 나란히 배치) */}
+                      <td className="py-3 px-3.5 align-middle">
+                        {/* 1줄: 견적서 제목 */}
+                        <div className="mb-1">
+                          <Link
+                            href={`/estimates/${est.id}/edit`}
+                            className="font-bold text-slate-900 hover:text-blue-600 text-xs transition-colors line-clamp-1 block"
+                            title={est.title}
+                          >
+                            {est.title}
+                          </Link>
+                        </div>
+                        {/* 2줄: 고객사 및 프로젝트 (나란히 배치) */}
+                        <div className="flex items-center gap-1.5 text-[11px] text-slate-500 flex-wrap">
+                          <span className="font-semibold text-slate-800 flex items-center gap-1 shrink-0">
+                            <Building2 className="w-3 h-3 text-blue-600" />
+                            <span>{est.project?.company?.name || '고객사미지정'}</span>
+                          </span>
+                          <span className="text-slate-300">|</span>
+                          <span className="text-slate-600 truncate max-w-xs" title={est.project?.title || ''}>
+                            {est.project?.title || '프로젝트 미지정'}
                           </span>
                         </div>
-                        <div className="text-[11px] text-slate-500 truncate max-w-[240px] mt-0.5" title={est.project?.title || ''}>
-                          {est.project?.title || '프로젝트 미지정'}
+                      </td>
+
+                      {/* 3. 최종합계(VAT포함 - 1줄) / 총공급가액(2줄) */}
+                      <td className="py-3 px-3.5 text-right align-middle whitespace-nowrap">
+                        {/* 1줄: 최종합계 (VAT포함) */}
+                        <div className="font-mono text-xs font-bold text-slate-900">
+                          ₩{formatCurrency(est.grandTotal)}
+                        </div>
+                        {/* 2줄: 총 공급가액 */}
+                        <div className="font-mono text-[11px] text-slate-500 mt-0.5">
+                          <span className="text-[10px] text-slate-400 mr-1">공급가</span>
+                          ₩{formatCurrency(est.totalSupplyPrice)}
                         </div>
                       </td>
 
-                      {/* 견적서 제목 */}
-                      <td className="py-3.5 px-3.5">
-                        <Link
-                          href={`/estimates/${est.id}/edit`}
-                          className="font-medium text-slate-900 hover:text-blue-600 text-xs transition-colors block max-w-sm leading-relaxed"
-                          title={est.title}
-                        >
-                          {est.title}
-                        </Link>
+                      {/* 4. 담당자(1줄) / 발행일자(2줄) */}
+                      <td className="py-3 px-3.5 align-middle whitespace-nowrap">
+                        <div className="font-semibold text-slate-800 text-xs">
+                          {est.author ? `${est.author.name} (${est.author.position})` : '-'}
+                        </div>
+                        <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                          {formatDate(est.createdAt)}
+                        </div>
                       </td>
 
-                      {/* 총 공급가액 */}
-                      <td className="py-3.5 px-3.5 text-right font-mono text-xs text-slate-600 font-medium whitespace-nowrap">
-                        ₩{formatCurrency(est.totalSupplyPrice)}
-                      </td>
-
-                      {/* 최종합계 (VAT포함) */}
-                      <td className="py-3.5 px-3.5 text-right font-mono text-xs font-bold text-slate-900 whitespace-nowrap">
-                        ₩{formatCurrency(est.grandTotal)}
-                      </td>
-
-                      {/* 진행상태 */}
-                      <td className="py-3.5 px-3.5 text-center whitespace-nowrap">
-                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${badge.bg}`}>
+                      {/* 5. 진행상태 */}
+                      <td className="py-3 px-3.5 text-center align-middle whitespace-nowrap">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${badge.bg}`}>
                           {badge.label}
                         </span>
                       </td>
 
-                      {/* 발행일 */}
-                      <td className="py-3.5 px-3.5 text-center text-xs text-slate-500 font-mono whitespace-nowrap">
-                        {formatDate(est.createdAt)}
-                      </td>
-
-                      {/* 액션 */}
-                      <td className="py-3.5 px-4 text-center whitespace-nowrap">
-                        <div className="flex items-center justify-center gap-1">
+                      {/* 6. 액션 관리 버튼 */}
+                      <td className="py-3 px-3.5 text-center align-middle whitespace-nowrap">
+                        <div className="flex items-center justify-center gap-0.5">
                           <Link
                             href={`/estimates/${est.id}/preview`}
                             className="p-1.5 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                             title="공식 견적서 인쇄/PDF"
                           >
-                            <Printer className="w-4 h-4" />
+                            <Printer className="w-3.5 h-3.5" />
                           </Link>
 
                           <a
@@ -280,7 +275,7 @@ export default function EstimatesPage() {
                             className="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
                             title="엑셀(.xlsx) 다운로드"
                           >
-                            <Download className="w-4 h-4" />
+                            <Download className="w-3.5 h-3.5" />
                           </a>
 
                           <button
@@ -289,7 +284,7 @@ export default function EstimatesPage() {
                             className="p-1.5 text-slate-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
                             title="버전 복제 분기 / 이력"
                           >
-                            <GitBranch className="w-4 h-4" />
+                            <GitBranch className="w-3.5 h-3.5" />
                           </button>
 
                           <Link
@@ -297,7 +292,7 @@ export default function EstimatesPage() {
                             className="p-1.5 text-slate-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
                             title="견적서 수정"
                           >
-                            <Edit3 className="w-4 h-4" />
+                            <Edit3 className="w-3.5 h-3.5" />
                           </Link>
 
                           <button
@@ -306,7 +301,7 @@ export default function EstimatesPage() {
                             className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                             title="견적서 삭제"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </td>
