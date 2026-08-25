@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { 
   FolderKanban, 
   Plus, 
@@ -15,13 +16,15 @@ import {
   X,
   User,
   Phone,
-  Mail
+  Mail,
+  Sparkles
 } from 'lucide-react';
 import { ProjectType, CompanyType } from '@/types/estimate';
 import { formatCurrency } from '@/lib/calculator';
 import { formatDate } from '@/lib/utils';
 
-export default function ProjectsPage() {
+function ProjectsPageContent() {
+  const searchParams = useSearchParams();
   const [projects, setProjects] = useState<ProjectType[]>([]);
   const [companies, setCompanies] = useState<CompanyType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,13 +45,39 @@ export default function ProjectsPage() {
   const [formClientPosition, setFormClientPosition] = useState('');
   const [formClientPhone, setFormClientPhone] = useState('');
   const [formClientEmail, setFormClientEmail] = useState('');
+  const [contactSourceInfo, setContactSourceInfo] = useState<{
+    type: 'PROJECT' | 'COMPANY';
+    name: string;
+  } | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const fetchProjects = async () => {
+  const fetchData = async () => {
     try {
-      const res = await fetch('/api/projects');
-      const data = await res.json();
-      setProjects(data);
+      const [pRes, cRes] = await Promise.all([
+        fetch('/api/projects'),
+        fetch('/api/companies')
+      ]);
+      const pData: ProjectType[] = await pRes.json();
+      const cData: CompanyType[] = await cRes.json();
+      setProjects(pData);
+      setCompanies(cData);
+
+      const urlCompanyId = searchParams.get('companyId');
+      const urlAction = searchParams.get('action');
+
+      if (urlCompanyId && urlAction === 'new') {
+        setEditingProject(null);
+        setFormCompanyId(urlCompanyId);
+        setFormTitle('');
+        setFormDesc('');
+        setFormStatus('IN_PROGRESS');
+        setFormStartDate('');
+        setFormEndDate('');
+        applyDefaultContactInfo(urlCompanyId, undefined, pData, cData);
+        setIsModalOpen(true);
+      } else if (cData.length > 0 && !formCompanyId) {
+        setFormCompanyId(cData[0].id);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -56,35 +85,87 @@ export default function ProjectsPage() {
     }
   };
 
-  const fetchCompanies = async () => {
-    try {
-      const res = await fetch('/api/companies');
-      const data = await res.json();
-      setCompanies(data);
-      if (data.length > 0 && !formCompanyId) setFormCompanyId(data[0].id);
-    } catch (err) {
-      console.error(err);
+  useEffect(() => {
+    fetchData();
+  }, [searchParams]);
+
+  // 담당자 연락망 기본값 자동 적용 (기존 프로젝트 우선 -> 없으면 고객사 정보)
+  const applyDefaultContactInfo = (
+    companyId: string,
+    specificProjectId?: string,
+    overrideProjectsList?: ProjectType[],
+    overrideCompaniesList?: CompanyType[]
+  ) => {
+    const pList = overrideProjectsList || projects;
+    const cList = overrideCompaniesList || companies;
+
+    const companyProjects = pList.filter((p) => p.companyId === companyId);
+    const targetCompany = cList.find((c) => c.id === companyId);
+
+    if (specificProjectId) {
+      const selProj = companyProjects.find((p) => p.id === specificProjectId);
+      if (selProj) {
+        setFormClientDept(selProj.clientDept || '');
+        setFormClientManager(selProj.clientManager || '');
+        setFormClientPosition(selProj.clientPosition || '');
+        setFormClientPhone(selProj.clientPhone || '');
+        setFormClientEmail(selProj.clientEmail || '');
+        setContactSourceInfo({ type: 'PROJECT', name: selProj.title });
+        return;
+      }
+    }
+
+    if (companyProjects.length > 0) {
+      // 1. 기존 프로젝트가 있는 경우: 가장 최근 프로젝트 정보 자동 로드
+      const lastProj = companyProjects[companyProjects.length - 1];
+      setFormClientDept(lastProj.clientDept || '');
+      setFormClientManager(lastProj.clientManager || '');
+      setFormClientPosition(lastProj.clientPosition || '');
+      setFormClientPhone(lastProj.clientPhone || '');
+      setFormClientEmail(lastProj.clientEmail || '');
+      setContactSourceInfo({ type: 'PROJECT', name: lastProj.title });
+    } else if (targetCompany) {
+      // 2. 기존 프로젝트가 없는 경우: 고객사 기본 정보 자동 로드
+      setFormClientDept('');
+      setFormClientManager(targetCompany.contactPerson || targetCompany.ceoName || '');
+      setFormClientPosition(
+        targetCompany.contactPerson ? '담당자' : targetCompany.ceoName ? '대표' : ''
+      );
+      setFormClientPhone(targetCompany.contactPhone || '');
+      setFormClientEmail(targetCompany.contactEmail || '');
+      setContactSourceInfo({ type: 'COMPANY', name: targetCompany.name });
+    } else {
+      setContactSourceInfo(null);
     }
   };
 
-  useEffect(() => {
-    fetchProjects();
-    fetchCompanies();
-  }, []);
+  const handleCompanyChange = (newCompanyId: string) => {
+    setFormCompanyId(newCompanyId);
+    if (!editingProject) {
+      applyDefaultContactInfo(newCompanyId);
+    }
+  };
 
-  const openCreateModal = () => {
+  const openCreateModal = (initialCompanyId?: string) => {
     setEditingProject(null);
+    const compId = initialCompanyId || (companies.length > 0 ? companies[0].id : '');
+    setFormCompanyId(compId);
     setFormTitle('');
     setFormDesc('');
     setFormStatus('IN_PROGRESS');
     setFormStartDate('');
     setFormEndDate('');
-    setFormClientDept('');
-    setFormClientManager('');
-    setFormClientPosition('');
-    setFormClientPhone('');
-    setFormClientEmail('');
-    if (companies.length > 0) setFormCompanyId(companies[0].id);
+
+    if (compId) {
+      applyDefaultContactInfo(compId);
+    } else {
+      setFormClientDept('');
+      setFormClientManager('');
+      setFormClientPosition('');
+      setFormClientPhone('');
+      setFormClientEmail('');
+      setContactSourceInfo(null);
+    }
     setIsModalOpen(true);
   };
 
@@ -101,6 +182,7 @@ export default function ProjectsPage() {
     setFormClientPosition(p.clientPosition || '');
     setFormClientPhone(p.clientPhone || '');
     setFormClientEmail(p.clientEmail || '');
+    setContactSourceInfo(null);
     setIsModalOpen(true);
   };
 
@@ -140,7 +222,7 @@ export default function ProjectsPage() {
 
       if (res.ok) {
         setIsModalOpen(false);
-        fetchProjects();
+        fetchData();
       } else {
         alert('저장에 실패했습니다.');
       }
@@ -183,7 +265,7 @@ export default function ProjectsPage() {
         </div>
         <button
           type="button"
-          onClick={openCreateModal}
+          onClick={() => openCreateModal()}
           className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-blue-500/20 transition-all"
         >
           <Plus className="w-4 h-4" />
@@ -216,7 +298,7 @@ export default function ProjectsPage() {
           <p className="text-sm font-semibold text-slate-600">등록된 프로젝트가 없습니다.</p>
           <button
             type="button"
-            onClick={openCreateModal}
+            onClick={() => openCreateModal()}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg"
           >
             <Plus className="w-4 h-4" /> 첫 프로젝트 등록하기
@@ -343,7 +425,7 @@ export default function ProjectsPage() {
                 </label>
                 <select
                   value={formCompanyId}
-                  onChange={(e) => setFormCompanyId(e.target.value)}
+                  onChange={(e) => handleCompanyChange(e.target.value)}
                   required
                   className="w-full p-2.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white font-medium"
                 >
@@ -369,12 +451,48 @@ export default function ProjectsPage() {
                 />
               </div>
 
-              {/* 프로젝트별 고객사 담당자 정보 그룹 */}
-              <div className="bg-blue-50/50 border border-blue-200 rounded-xl p-4 space-y-3">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-blue-900 border-b border-blue-200/60 pb-1.5">
-                  <User className="w-3.5 h-3.5 text-blue-600" />
-                  프로젝트별 발주처(고객사) 담당자 연락망
+              {/* 프로젝트별 고객사 담당자 정보 그룹 (기존 프로젝트/고객사 정보 자동 로드) */}
+              <div className="bg-blue-50/60 border border-blue-200 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-blue-200/80 pb-2 flex-wrap gap-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-blue-900">
+                    <User className="w-3.5 h-3.5 text-blue-600" />
+                    <span>프로젝트별 발주처(고객사) 담당자 연락망</span>
+                  </div>
+                  
+                  {/* 기존 프로젝트가 2개 이상일 때 다른 프로젝트 담당자 선택 옵션 */}
+                  {!editingProject && projects.filter((p) => p.companyId === formCompanyId).length > 1 && (
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          applyDefaultContactInfo(formCompanyId, e.target.value);
+                        }
+                      }}
+                      className="text-[10px] bg-white border border-blue-300 text-blue-800 rounded px-2 py-0.5 font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                      defaultValue=""
+                    >
+                      <option value="" disabled>다른 기존 프로젝트 연락망 가져오기 ▾</option>
+                      {projects
+                        .filter((p) => p.companyId === formCompanyId)
+                        .map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.title} ({p.clientManager || '담당자미기재'})
+                          </option>
+                        ))}
+                    </select>
+                  )}
                 </div>
+
+                {/* 자동 로드 안내 배지 */}
+                {contactSourceInfo && !editingProject && (
+                  <div className="bg-white/80 border border-blue-200 rounded-lg px-2.5 py-1 text-[11px] text-blue-800 flex items-center gap-1.5 shadow-sm">
+                    <span className="font-bold text-blue-600">💡 자동 입력 안내:</span>
+                    <span>
+                      {contactSourceInfo.type === 'PROJECT'
+                        ? `기존 프로젝트 [${contactSourceInfo.name}]의 담당자 연락망을 기본값으로 불러왔습니다. (수정 가능)`
+                        : `기존 프로젝트가 없어 고객사 [${contactSourceInfo.name}]의 기본 연락처를 불러왔습니다. (수정 가능)`}
+                    </span>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -517,5 +635,19 @@ export default function ProjectsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProjectsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        </div>
+      }
+    >
+      <ProjectsPageContent />
+    </Suspense>
   );
 }
