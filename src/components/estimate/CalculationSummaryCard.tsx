@@ -25,7 +25,7 @@ export default function CalculationSummaryCard({
   onRateChange,
 }: CalculationSummaryCardProps) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden sticky top-20">
+    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-md shadow-slate-200/60 overflow-hidden">
       {/* Header */}
       <div className="bg-slate-900 text-white p-4">
         <div className="flex items-center justify-between">

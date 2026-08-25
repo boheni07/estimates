@@ -380,8 +380,8 @@ export default function EditEstimatePage({ params }: { params: { id: string } })
           </div>
         </div>
 
-        {/* Right: Slim & Compact 1-Row Rate Summary Panel */}
-        <div className="w-full xl:w-72 2xl:w-80 flex-shrink-0">
+        {/* Right: Slim & Compact 1-Row Rate Summary Panel (Floating Sticky) */}
+        <div className="w-full xl:w-72 2xl:w-80 flex-shrink-0 xl:sticky xl:top-6 xl:self-start z-10 transition-all">
           <CalculationSummaryCard
             calculation={calculation}
             overheadRate={overheadRate}
