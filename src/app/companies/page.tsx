@@ -15,15 +15,26 @@ import {
   FolderKanban,
   FileSpreadsheet,
   X,
-  Check
+  Check,
+  List,
+  LayoutGrid,
+  ArrowUpDown,
+  MapPin,
+  Calendar,
+  ExternalLink
 } from 'lucide-react';
 import { CompanyType } from '@/types/estimate';
 import { formatCurrency } from '@/lib/calculator';
+import { formatDate } from '@/lib/utils';
 
 export default function CompaniesPage() {
   const [companies, setCompanies] = useState<CompanyType[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // 뷰 모드 및 정렬 상태 (기본값: 리스트형, 최신 등록일순)
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [sortBy, setSortBy] = useState<'date-desc' | 'date-asc' | 'name-asc' | 'name-desc'>('date-desc');
 
   // 등록/수정 모달 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -137,10 +148,30 @@ export default function CompaniesPage() {
     }
   };
 
-  const filteredCompanies = companies.filter((c) =>
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (c.contactPerson && c.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // 검색 및 날짜순/이름순 정렬 로직
+  const sortedAndFilteredCompanies = [...companies]
+    .filter((c) =>
+      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (c.contactPerson && c.contactPerson.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (c.ceoName && c.ceoName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (c.businessNumber && c.businessNumber.includes(searchTerm)) ||
+      (c.address && c.address.toLowerCase().includes(searchTerm.toLowerCase()))
+    )
+    .sort((a, b) => {
+      if (sortBy === 'date-desc') {
+        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      }
+      if (sortBy === 'date-asc') {
+        return new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime();
+      }
+      if (sortBy === 'name-asc') {
+        return a.name.localeCompare(b.name, 'ko');
+      }
+      if (sortBy === 'name-desc') {
+        return b.name.localeCompare(a.name, 'ko');
+      }
+      return 0;
+    });
 
   return (
     <div className="space-y-6">
@@ -155,47 +186,222 @@ export default function CompaniesPage() {
         <button
           type="button"
           onClick={openCreateModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-blue-500/20 transition-all"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-blue-500/20 transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           신규 고객사 등록
         </button>
       </div>
 
-      {/* Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+      {/* Search, Sort & View Mode Controls Bar */}
+      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+        {/* Search Input */}
         <div className="relative flex-1 max-w-md">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="고객사명, 담당자명 검색..."
+            placeholder="고객사명, 대표자, 담당자, 사업자번호 검색..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 focus:bg-white"
           />
         </div>
+
+        {/* Sort & View Mode Toggle */}
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* 정렬 드롭다운 (날짜순 / 이름순) */}
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700">
+            <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
+            <span className="font-semibold text-slate-500 text-[11px]">정렬:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="bg-transparent text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer"
+            >
+              <option value="date-desc">📅 등록일 최신순</option>
+              <option value="date-asc">📅 등록일 오래된순</option>
+              <option value="name-asc">🔤 고객사명 가나다순 (A-Z)</option>
+              <option value="name-desc">🔤 고객사명 역순 (Z-A)</option>
+            </select>
+          </div>
+
+          {/* 뷰 모드 토글 (리스트형 기본) */}
+          <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
+            <button
+              type="button"
+              onClick={() => setViewMode('list')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-bold transition-all cursor-pointer ${
+                viewMode === 'list'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+              title="리스트형 테이블 뷰"
+            >
+              <List className="w-3.5 h-3.5" />
+              <span>리스트형</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('grid')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-bold transition-all cursor-pointer ${
+                viewMode === 'grid'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+              title="카드형 그리드 뷰"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>카드형</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Company Cards Grid */}
+      {/* Main Content (List / Grid View) */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
-      ) : filteredCompanies.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center space-y-3">
+      ) : sortedAndFilteredCompanies.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center space-y-3 shadow-sm">
           <Building2 className="w-10 h-10 text-slate-300 mx-auto" />
           <p className="text-sm font-semibold text-slate-600">등록된 고객사가 없습니다.</p>
           <button
             type="button"
             onClick={openCreateModal}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
           >
             <Plus className="w-4 h-4" /> 첫 고객사 등록하기
           </button>
         </div>
+      ) : viewMode === 'list' ? (
+        /* 1. 리스트형 테이블 뷰 (Default) */
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-slate-600">
+              <thead className="bg-slate-50/90 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-tight">
+                <tr>
+                  <th className="py-3 px-4">고객사(법인)명</th>
+                  <th className="py-3 px-3">사업자등록번호</th>
+                  <th className="py-3 px-3">대표자 / 담당자</th>
+                  <th className="py-3 px-3">대표 연락처 / 이메일</th>
+                  <th className="py-3 px-3 text-center">진행 프로젝트</th>
+                  <th className="py-3 px-3 text-right">누적 견적 금액</th>
+                  <th className="py-3 px-3 text-center">등록일자</th>
+                  <th className="py-3 px-4 text-center">관리</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {sortedAndFilteredCompanies.map((comp) => {
+                  const projectCount = comp.projects?.length || 0;
+                  const estimateList = comp.projects?.flatMap((p: any) => p.estimates || []) || [];
+                  const totalEstimateAmount = estimateList.reduce(
+                    (acc: number, cur: any) => acc + (cur.grandTotal || 0),
+                    0
+                  );
+
+                  return (
+                    <tr
+                      key={comp.id}
+                      className="hover:bg-blue-50/40 transition-colors group"
+                    >
+                      <td className="py-3 px-4">
+                        <Link
+                          href={`/companies/${comp.id}`}
+                          className="font-bold text-slate-900 text-sm hover:text-blue-600 flex items-center gap-2 group-hover:underline"
+                        >
+                          <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
+                            <Building2 className="w-3.5 h-3.5" />
+                          </div>
+                          <span>{comp.name}</span>
+                        </Link>
+                        {comp.address && (
+                          <p className="text-[11px] text-slate-400 truncate max-w-xs mt-0.5">
+                            {comp.address}
+                          </p>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 font-mono text-[11px] text-slate-600">
+                        {comp.businessNumber || '-'}
+                      </td>
+                      <td className="py-3 px-3">
+                        <div className="font-semibold text-slate-800">
+                          {comp.contactPerson || '-'}
+                        </div>
+                        {comp.ceoName && (
+                          <div className="text-[11px] text-slate-400">
+                            대표: {comp.ceoName}
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-3 px-3">
+                        {comp.contactPhone && (
+                          <div className="font-mono text-[11px] text-slate-700">
+                            {comp.contactPhone}
+                          </div>
+                        )}
+                        {comp.contactEmail && (
+                          <div className="text-[11px] text-blue-600 font-mono">
+                            {comp.contactEmail}
+                          </div>
+                        )}
+                        {!comp.contactPhone && !comp.contactEmail && (
+                          <span className="text-slate-400">-</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 text-center">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                          {projectCount}개 사업
+                        </span>
+                      </td>
+                      <td className="py-3 px-3 text-right font-mono font-bold text-slate-900 text-sm">
+                        {totalEstimateAmount > 0 ? (
+                          `₩${formatCurrency(totalEstimateAmount)}`
+                        ) : (
+                          <span className="text-slate-400 font-normal text-xs">-</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 text-center text-slate-400 text-[11px] font-mono">
+                        {comp.createdAt ? formatDate(comp.createdAt) : '-'}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          <Link
+                            href={`/companies/${comp.id}`}
+                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="상세보기"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(comp)}
+                            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                            title="수정"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(comp.id, comp.name)}
+                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                            title="삭제"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
       ) : (
+        /* 2. 카드형 그리드 뷰 (Grid View) */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredCompanies.map((comp) => {
+          {sortedAndFilteredCompanies.map((comp) => {
             const projectCount = comp.projects?.length || 0;
             const estimateList = comp.projects?.flatMap((p: any) => p.estimates || []) || [];
             const totalEstimateAmount = estimateList.reduce((acc: number, cur: any) => acc + (cur.grandTotal || 0), 0);
@@ -223,7 +429,7 @@ export default function CompaniesPage() {
                       <button
                         type="button"
                         onClick={() => openEditModal(comp)}
-                        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
                         title="수정"
                       >
                         <Edit className="w-4 h-4" />
@@ -231,7 +437,7 @@ export default function CompaniesPage() {
                       <button
                         type="button"
                         onClick={() => handleDelete(comp.id, comp.name)}
-                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                         title="삭제"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -255,25 +461,33 @@ export default function CompaniesPage() {
                     {comp.contactEmail && (
                       <div className="flex items-center gap-2">
                         <Mail className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{comp.contactEmail}</span>
+                        <span className="font-mono text-blue-600">{comp.contactEmail}</span>
+                      </div>
+                    )}
+                    {comp.address && (
+                      <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <span className="truncate">{comp.address}</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* 하단 통계 및 바로가기 */}
-                <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <div className="text-xs">
-                    <div className="text-slate-400 text-[11px]">누적 견적 ({estimateList.length}건)</div>
-                    <div className="font-mono font-bold text-slate-900 mt-0.5">
-                      ₩{formatCurrency(totalEstimateAmount)}
+                {/* 하단 통계 및 이동 */}
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <div className="text-[11px] text-slate-400">
+                      진행 프로젝트 <span className="font-bold text-slate-800 font-mono">{projectCount}건</span>
+                    </div>
+                    <div className="text-xs font-mono font-bold text-slate-900">
+                      {totalEstimateAmount > 0 ? `₩${formatCurrency(totalEstimateAmount)}` : '견적 없음'}
                     </div>
                   </div>
                   <Link
                     href={`/companies/${comp.id}`}
                     className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
                   >
-                    이력 상세 <ArrowRight className="w-3.5 h-3.5" />
+                    상세보기 <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               </div>
