@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT/SW 통합 견적 관리 시스템 - 사용 매뉴얼 시연 동영상</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+  <!-- Top Navigation Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-indigo-600 rounded-xl text-white shadow-md shadow-indigo-500/20">
+          <i class="fa-solid fa-calculator text-lg"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-base text-white tracking-tight">IT/SW 통합 견적 관리 시스템</h1>
+          <p class="text-xs text-indigo-400 font-semibold">공식 사용 매뉴얼 시연 비디오 (Interactive Walkthrough Demo)</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 text-xs">
+        <a href="./09_USER_MANUAL.md" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg transition-colors border border-slate-700">
+          <i class="fa-solid fa-book-open mr-1.5"></i> 사용자 매뉴얼 (MD)
+        </a>
+        <a href="http://localhost:3300" target="_blank" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-sm transition-colors">
+          <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i> 실제 시스템 바로가기
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+    <!-- Video Player Section -->
+    <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+          <h2 class="text-lg font-bold text-white tracking-tight">전체 기능 풀 워크스루 시연 동영상 (1440x900 HD)</h2>
+        </div>
+        <span class="text-xs font-mono text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700">
+          Duration: ~1 Min | Format: WebM / HTML5 Video
+        </span>
+      </div>
+
+      <!-- HTML5 Video Container -->
+      <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-slate-800 shadow-inner">
+        <video 
+          id="demoVideo"
+          controls 
+          autoplay 
+          muted 
+          loop
+          playsinline 
+          class="w-full h-full object-contain"
+        >
+          <source src="./videos/system_demo_walkthrough.webm" type="video/webm">
+          브라우저가 HTML5 비디오 태그를 지원하지 않습니다.
+        </video>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
+        <p>💡 비디오 컨트롤러를 통해 재생/일시정지, 배속 조절(1.5x, 2x), 전체화면 시청이 가능합니다.</p>
+        <a href="./videos/system_demo_walkthrough.webm" download class="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1">
+          <i class="fa-solid fa-download"></i> 동영상 원본 다운로드 (.webm)
+        </a>
+      </div>
+    </div>
+
+    <!-- Step by Step Scene Gallery -->
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-film text-indigo-400"></i> 주요 시연 장면 타임라인 (Timeline Walkthrough)
+        </h2>
+        <span class="text-xs text-slate-400">총 9단계 주요 기능 시연</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Step 1 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
+          <div class="aspect-video bg-slate-950 overflow-hidden relative">
+            <img src="./videos/step1_login.png" alt="Step 1 Login" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+              Scene 01
+            </span>
+          </div>
+          <div class="p-4 space-y-1">
+            <h3 class="font-bold text-sm text-white">1. ID/PW 사용자 인증 로그인</h3>
+            <p class="text-xs text-slate-400">JWT 기반 보안 세션 발급 및 관리자/직원 계정 로그인</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
+          <div class="aspect-video bg-slate-950 overflow-hidden relative">
+            <img src="./videos/step2_dashboard.png" alt="Step 2 Dashboard" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+              Scene 02
+            </span>
+          </div>
+          <div class="p-4 space-y-1">
+            <h3 class="font-bold text-sm text-white">2. 통합 견적 대시보드 및 KPI</h3>
+            <p class="text-xs text-slate-400">총 견적액, 수주 성공률, 상태별 통계 및 최근 발행 이력</p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
+          <div class="aspect-video bg-slate-950 overflow-hidden relative">
+            <img src="./videos/step3_sidebar_collapsed.png" alt="Step 3 Sidebar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+              Scene 03
+            </span>
+          </div>
+          <div class="p-4 space-y-1">
+            <h3 class="font-bold text-sm text-white">3. 좌측 메뉴 접기/펼치기</h3>
+            <p class="text-xs text-slate-400">아이콘 중심 컴팩트 뷰 전환 및 호버 툴팁, 상태 유지</p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
+          <div class="aspect-video bg-slate-950 overflow-hidden relative">
+            <img src="./videos/step4_projects_crm.png" alt="Step 4 Projects CRM" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+              Scene 04
+            </span>
+          </div>
+          <div class="p-4 space-y-1">
+            <h3 class="font-bold text-sm text-white">4. 프로젝트 전담 연락망 관리</h3>
+            <p class="text-xs text-slate-400">고객사별 프로젝트 담당부서, 담당자명, 직책, 연락처, 이메일</p>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
+          <div class="aspect-video bg-slate-950 overflow-hidden relative">
+            <img src="./videos/step5_estimate_new.png" alt="Step 5 New Estimate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+              Scene 05
+            </span>
+          </div>
+          <div class="p-4 space-y-1">
+            <h3 class="font-bold text-sm text-white">5. 신규 견적서 생성</h3>
+            <p class="text-xs text-slate-400">고객사 및 프로젝트 지정 후 스마트 견적서 즉시 생성</p>
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
+          <div class="aspect-video bg-slate-950 overflow-hidden relative">
+            <img src="./videos/step6_estimate_editor.png" alt="Step 6 Estimate Editor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+              Scene 06
+            </span>
+          </div>
+          <div class="p-4 space-y-1">
+            <h3 class="font-bold text-sm text-white">6. 2줄 카드 품목 & 플로팅 요율</h3>
+            <p class="text-xs text-slate-400">KOSA 인건비, 2줄 물품 카드, 슬림 플로팅 요율 패널 실시간 계산</p>
+          </div>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
+          <div class="aspect-video bg-slate-950 overflow-hidden relative">
+            <img src="./videos/step7_a4_print_preview.png" alt="Step 7 A4 Print" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+              Scene 07
+            </span>
+          </div>
+          <div class="p-4 space-y-1">
+            <h3 class="font-bold text-sm text-white">7. 공식 표준 A4 인쇄 / PDF</h3>
+            <p class="text-xs text-slate-400">견적 총괄표, SW인건비 산출서, 공급자 인감, 법적 근거 완비</p>
+          </div>
+        </div>
+
+        <!-- Step 8 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
+          <div class="aspect-video bg-slate-950 overflow-hidden relative">
+            <img src="./videos/step8_users_management.png" alt="Step 8 Users" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+              Scene 08
+            </span>
+          </div>
+          <div class="p-4 space-y-1">
+            <h3 class="font-bold text-sm text-white">8. 직원(사용자) 관리 (ADMIN)</h3>
+            <p class="text-xs text-slate-400">직원 등록, 수정, 삭제 및 관리자/일반 권한 제어</p>
+          </div>
+        </div>
+
+        <!-- Step 9 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
+          <div class="aspect-video bg-slate-950 overflow-hidden relative">
+            <img src="./videos/step9_audit_logs.png" alt="Step 9 Audit Logs" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+              Scene 09
+            </span>
+          </div>
+          <div class="p-4 space-y-1">
+            <h3 class="font-bold text-sm text-white">9. 열람 보안 감사 로그 (ADMIN)</h3>
+            <p class="text-xs text-slate-400">열람, 인쇄, 엑셀, 타인수정 시도 실시간 로깅 모니터링</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-800 py-8 text-center text-xs text-slate-500 bg-slate-950">
+    <p>IT/SW 통합 견적 관리 시스템 (Estimate Management System) &copy; 2026. All Rights Reserved.</p>
+  </footer>
+</body>
+</html>

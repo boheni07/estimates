@@ -17,6 +17,9 @@
 | **테스트/품질**| **[산출물-07] 테스트 계획서 및 시험 결과서** | 7개 영역 32개 테스트 케이스 시험 결과표, 단위/통합/보안 검증 결과 (100% Pass) | [07_TEST_REPORT.md](./07_TEST_REPORT.md) |
 | **배포/운영** | **[산출물-08] 시스템 설치 및 배포/운영자 가이드** | 시스템 사양, Docker Compose 원클릭 실행, DB 자동 마이그레이션/시딩, 백업/복구 절차 | [08_DEPLOYMENT_GUIDE.md](./08_DEPLOYMENT_GUIDE.md) |
 | **사용자** | **[산출물-09] 시스템 사용자 매뉴얼** | 로그인, 견적서 작성 요령, 버전 분기 및 복제, A4 인쇄/엑셀 내보내기, 관리자 직원/감사로그 매뉴얼 | [09_USER_MANUAL.md](./09_USER_MANUAL.md) |
+| **시연영상** | **[시연동영상] 인터랙티브 워크스루 비디오 플레이어** | 실제 구동 화면 1440x900 HD 녹화 비디오 및 9개 단계별 장면 갤러리 플레이어 | [DEMO_VIDEO_PLAYER.html](./DEMO_VIDEO_PLAYER.html) |
+| **동영상파일**| **[시연동영상] 원본 녹화 파일 (.webm)** | 1440x900 고화질 풀 워크스루 시연 비디오 원본 파일 (3.6MB) | [system_demo_walkthrough.webm](./videos/system_demo_walkthrough.webm) |
+| **총괄인덱스** | **산출물 총괄 인덱스 및 대시보드** | SDLC 수명주기 매핑 및 전체 산출물 디렉토리 | [README.md](./README.md) |
 
 ---
 
