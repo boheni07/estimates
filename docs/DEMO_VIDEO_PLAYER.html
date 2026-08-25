@@ -22,8 +22,8 @@
         <div>
           <h1 class="font-bold text-base text-white tracking-tight">IT/SW 통합 견적 관리 시스템</h1>
           <p class="text-xs text-indigo-400 font-semibold flex items-center gap-1.5">
-            <i class="fa-solid fa-volume-high text-emerald-400 animate-pulse"></i>
-            한국어 AI 음성 해설 탑재 시연 비디오 (AI Voiceover Walkthrough)
+            <i class="fa-solid fa-circle-play text-emerald-400 animate-pulse"></i>
+            공식 시연 동영상 & 한국어 AI 성우 해설 플레이어 (MP4 / WebM)
           </p>
         </div>
       </div>
@@ -32,74 +32,68 @@
           <i class="fa-solid fa-book-open mr-1.5"></i> 사용자 매뉴얼 (MD)
         </a>
         <a href="http://localhost:3300" target="_blank" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-sm transition-colors">
-          <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i> 실제 시스템 바로가기
+          <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i> 시스템 접속 (포트 3300)
         </a>
       </div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-    <!-- Video & Voice Player Section -->
+    <!-- Video Player Section -->
     <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between flex-wrap gap-3">
         <div class="flex items-center gap-2.5">
           <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-          <h2 class="text-lg font-bold text-white tracking-tight">전체 기능 시연 비디오 + 전문 성우 음성 해설</h2>
-          <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-            음성 내레이션 자동 동기화
+          <h2 class="text-lg font-bold text-white tracking-tight">풀 기능 시연 비디오 (1440x900 HD / MP4 고화질)</h2>
+          <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            H.264 / AAC 호환 인코딩
           </span>
         </div>
         
-        <!-- Audio Controls -->
         <div class="flex items-center gap-2">
-          <button 
-            id="voiceToggleBtn" 
-            onclick="toggleVoice()"
-            class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg shadow transition-colors flex items-center gap-1.5 cursor-pointer"
-          >
-            <i class="fa-solid fa-volume-high" id="voiceIcon"></i>
-            <span id="voiceStatusText">음성 해설 켜짐</span>
-          </button>
-          <a href="./videos/system_demo_voiceover.mp3" download class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition-colors border border-slate-700">
-            <i class="fa-solid fa-file-audio mr-1"></i> 음성 MP3 다운로드
+          <a href="./videos/system_demo_walkthrough.mp4" download class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-lg shadow transition-colors flex items-center gap-1.5">
+            <i class="fa-solid fa-download"></i> MP4 동영상 다운로드 (1.4MB)
+          </a>
+          <a href="./videos/system_demo_voiceover.mp3" download class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition-colors border border-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-file-audio"></i> 음성 MP3
           </a>
         </div>
       </div>
 
-      <!-- Video Player Wrapper -->
-      <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-slate-800 shadow-inner group">
+      <!-- Video Player Wrapper with Poster -->
+      <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-slate-800 shadow-2xl group">
         <video 
           id="demoVideo"
           controls 
-          autoplay 
-          muted 
+          preload="metadata"
+          poster="./videos/step2_dashboard.png"
           playsinline 
-          class="w-full h-full object-contain"
+          class="w-full h-full object-contain cursor-pointer"
         >
+          <source src="./videos/system_demo_walkthrough.mp4" type="video/mp4">
           <source src="./videos/system_demo_walkthrough.webm" type="video/webm">
-          브라우저가 HTML5 비디오 태그를 지원하지 않습니다.
+          브라우저가 비디오 재생을 지원하지 않습니다.
         </video>
-
-        <!-- Hidden Audio Element for Perfect Sync -->
-        <audio id="demoAudio" preload="auto">
-          <source src="./videos/system_demo_voiceover.mp3" type="audio/mp3">
-        </audio>
 
         <!-- Real-time Live Subtitle Banner -->
         <div id="subtitleBox" class="absolute bottom-14 inset-x-8 text-center pointer-events-none transition-opacity duration-300">
           <div class="inline-block bg-black/85 backdrop-blur text-white text-sm md:text-base font-semibold px-6 py-2.5 rounded-full border border-slate-700 shadow-2xl">
             <i class="fa-solid fa-quote-left text-xs text-indigo-400 mr-2"></i>
-            <span id="subtitleText">IT/SW 통합 견적 관리 시스템 시연을 시작합니다.</span>
+            <span id="subtitleText">동영상의 재생 버튼(▶)을 클릭하면 영상과 한국어 음성 설명이 시작됩니다.</span>
             <i class="fa-solid fa-quote-right text-xs text-indigo-400 ml-2"></i>
           </div>
         </div>
       </div>
 
-      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
-        <p>💡 비디오 재생 버튼을 누르면 전문 AI 성우의 한국어 음성 해설이 영상 진행에 맞춰 자동 동기화되어 재생됩니다.</p>
-        <a href="./videos/system_demo_walkthrough.webm" download class="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1">
-          <i class="fa-solid fa-download"></i> 동영상 원본 (.webm) 다운로드
-        </a>
+      <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800 flex-wrap gap-2">
+        <p>💡 영상 재생 시 한국어 AI 성우(선희 Neural)의 음성 내레이션과 하단 한글 자막이 완벽하게 일치하여 재생됩니다.</p>
+        <div class="flex items-center gap-3">
+          <span class="text-slate-500">포맷: MP4 (H.264 / AAC 192kbps)</span>
+          <span class="text-slate-500">|</span>
+          <span class="text-slate-500">해상도: 1440x900 HD</span>
+          <span class="text-slate-500">|</span>
+          <span class="text-slate-500">길이: 1분 42초</span>
+        </div>
       </div>
     </div>
 
@@ -107,9 +101,9 @@
     <div class="space-y-4">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-          <i class="fa-solid fa-film text-indigo-400"></i> 주요 시연 장면 및 개별 음성 설명 (Scene by Scene)
+          <i class="fa-solid fa-film text-indigo-400"></i> 주요 시연 장면 타임라인 (Timeline & Audio Clips)
         </h2>
-        <span class="text-xs text-slate-400">각 카드의 [음성 듣기] 버튼을 누르면 해당 장면의 해설만 청취할 수 있습니다.</span>
+        <span class="text-xs text-slate-400">각 카드의 [음성 듣기] 버튼을 누르면 해당 장면만 청취할 수 있습니다.</span>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -129,9 +123,12 @@
               </p>
             </div>
           </div>
-          <div class="p-4 pt-0">
-            <button onclick="playClip('./videos/scene1_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+          <div class="p-4 pt-0 flex gap-2">
+            <button onclick="seekVideo(0)" class="flex-1 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-play text-[10px]"></i> 장면 이동
+            </button>
+            <button onclick="playClip('./videos/scene1_voice.mp3')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-volume-high text-[10px]"></i> 음성 듣기
             </button>
           </div>
         </div>
@@ -142,7 +139,7 @@
             <div class="aspect-video bg-slate-950 overflow-hidden relative">
               <img src="./videos/step2_dashboard.png" alt="Step 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-                Scene 02 (00:06)
+                Scene 02 (00:13)
               </span>
             </div>
             <div class="p-4 space-y-1.5">
@@ -152,9 +149,12 @@
               </p>
             </div>
           </div>
-          <div class="p-4 pt-0">
-            <button onclick="playClip('./videos/scene2_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+          <div class="p-4 pt-0 flex gap-2">
+            <button onclick="seekVideo(12.7)" class="flex-1 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-play text-[10px]"></i> 장면 이동
+            </button>
+            <button onclick="playClip('./videos/scene2_voice.mp3')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-volume-high text-[10px]"></i> 음성 듣기
             </button>
           </div>
         </div>
@@ -165,7 +165,7 @@
             <div class="aspect-video bg-slate-950 overflow-hidden relative">
               <img src="./videos/step3_sidebar_collapsed.png" alt="Step 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-                Scene 03 (00:12)
+                Scene 03 (00:22)
               </span>
             </div>
             <div class="p-4 space-y-1.5">
@@ -175,9 +175,12 @@
               </p>
             </div>
           </div>
-          <div class="p-4 pt-0">
-            <button onclick="playClip('./videos/scene3_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+          <div class="p-4 pt-0 flex gap-2">
+            <button onclick="seekVideo(22.2)" class="flex-1 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-play text-[10px]"></i> 장면 이동
+            </button>
+            <button onclick="playClip('./videos/scene3_voice.mp3')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-volume-high text-[10px]"></i> 음성 듣기
             </button>
           </div>
         </div>
@@ -188,7 +191,7 @@
             <div class="aspect-video bg-slate-950 overflow-hidden relative">
               <img src="./videos/step4_projects_crm.png" alt="Step 4" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-                Scene 04 (00:17)
+                Scene 04 (00:31)
               </span>
             </div>
             <div class="p-4 space-y-1.5">
@@ -198,9 +201,12 @@
               </p>
             </div>
           </div>
-          <div class="p-4 pt-0">
-            <button onclick="playClip('./videos/scene4_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+          <div class="p-4 pt-0 flex gap-2">
+            <button onclick="seekVideo(30.6)" class="flex-1 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-play text-[10px]"></i> 장면 이동
+            </button>
+            <button onclick="playClip('./videos/scene4_voice.mp3')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-volume-high text-[10px]"></i> 음성 듣기
             </button>
           </div>
         </div>
@@ -211,7 +217,7 @@
             <div class="aspect-video bg-slate-950 overflow-hidden relative">
               <img src="./videos/step5_estimate_new.png" alt="Step 5" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-                Scene 05 (00:23)
+                Scene 05 (00:40)
               </span>
             </div>
             <div class="p-4 space-y-1.5">
@@ -221,9 +227,12 @@
               </p>
             </div>
           </div>
-          <div class="p-4 pt-0">
-            <button onclick="playClip('./videos/scene5_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+          <div class="p-4 pt-0 flex gap-2">
+            <button onclick="seekVideo(40.2)" class="flex-1 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-play text-[10px]"></i> 장면 이동
+            </button>
+            <button onclick="playClip('./videos/scene5_voice.mp3')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-volume-high text-[10px]"></i> 음성 듣기
             </button>
           </div>
         </div>
@@ -234,7 +243,7 @@
             <div class="aspect-video bg-slate-950 overflow-hidden relative">
               <img src="./videos/step6_estimate_editor.png" alt="Step 6" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-                Scene 06 (00:29)
+                Scene 06 (00:49)
               </span>
             </div>
             <div class="p-4 space-y-1.5">
@@ -244,9 +253,12 @@
               </p>
             </div>
           </div>
-          <div class="p-4 pt-0">
-            <button onclick="playClip('./videos/scene6_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+          <div class="p-4 pt-0 flex gap-2">
+            <button onclick="seekVideo(49.2)" class="flex-1 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-play text-[10px]"></i> 장면 이동
+            </button>
+            <button onclick="playClip('./videos/scene6_voice.mp3')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-volume-high text-[10px]"></i> 음성 듣기
             </button>
           </div>
         </div>
@@ -257,19 +269,22 @@
             <div class="aspect-video bg-slate-950 overflow-hidden relative">
               <img src="./videos/step7_a4_print_preview.png" alt="Step 7" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-                Scene 07 (00:43)
+                Scene 07 (01:08)
               </span>
             </div>
             <div class="p-4 space-y-1.5">
               <h3 class="font-bold text-sm text-white">7. 공식 표준 A4 인쇄 / PDF</h3>
               <p class="text-xs text-slate-400 leading-relaxed">
-                "공인 견적 총괄표와 SW인건비 산출서, 공급자 인감, 법적 근거가 완비된 A4 인쇄 뷰."
+                "공인 견적 총괄표와 SW인건비 산출서, 공급자 인감, 법적 근거가 완비된 A4 뷰."
               </p>
             </div>
           </div>
-          <div class="p-4 pt-0">
-            <button onclick="playClip('./videos/scene7_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+          <div class="p-4 pt-0 flex gap-2">
+            <button onclick="seekVideo(68.3)" class="flex-1 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-play text-[10px]"></i> 장면 이동
+            </button>
+            <button onclick="playClip('./videos/scene7_voice.mp3')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-volume-high text-[10px]"></i> 음성 듣기
             </button>
           </div>
         </div>
@@ -280,7 +295,7 @@
             <div class="aspect-video bg-slate-950 overflow-hidden relative">
               <img src="./videos/step8_users_management.png" alt="Step 8" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-                Scene 08 (00:52)
+                Scene 08 (01:20)
               </span>
             </div>
             <div class="p-4 space-y-1.5">
@@ -290,9 +305,12 @@
               </p>
             </div>
           </div>
-          <div class="p-4 pt-0">
-            <button onclick="playClip('./videos/scene8_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+          <div class="p-4 pt-0 flex gap-2">
+            <button onclick="seekVideo(79.6)" class="flex-1 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-play text-[10px]"></i> 장면 이동
+            </button>
+            <button onclick="playClip('./videos/scene8_voice.mp3')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-volume-high text-[10px]"></i> 음성 듣기
             </button>
           </div>
         </div>
@@ -303,7 +321,7 @@
             <div class="aspect-video bg-slate-950 overflow-hidden relative">
               <img src="./videos/step9_audit_logs.png" alt="Step 9" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-                Scene 09 (00:59)
+                Scene 09 (01:27)
               </span>
             </div>
             <div class="p-4 space-y-1.5">
@@ -313,9 +331,12 @@
               </p>
             </div>
           </div>
-          <div class="p-4 pt-0">
-            <button onclick="playClip('./videos/scene9_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+          <div class="p-4 pt-0 flex gap-2">
+            <button onclick="seekVideo(87.2)" class="flex-1 py-1.5 bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold rounded-lg border border-indigo-500/30 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-play text-[10px]"></i> 장면 이동
+            </button>
+            <button onclick="playClip('./videos/scene9_voice.mp3')" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-volume-high text-[10px]"></i> 음성 듣기
             </button>
           </div>
         </div>
@@ -330,9 +351,7 @@
   <!-- Synchronization Script -->
   <script>
     const video = document.getElementById('demoVideo');
-    const audio = document.getElementById('demoAudio');
     const subtitleText = document.getElementById('subtitleText');
-    let isVoiceEnabled = true;
     let clipAudio = null;
 
     // Subtitle Timings (Precise Audio-Synced Timecodes)
@@ -348,62 +367,23 @@
       { start: 87.12, end: 102.00, text: "열람 감사 로그 화면에서 열람, 인쇄, 엑셀, 타인수정 시도 이력을 실시간 모니터링합니다. 시연을 마칩니다." }
     ];
 
-    // Synchronize Video and Audio Playback
-    video.addEventListener('play', () => {
-      if (clipAudio) { clipAudio.pause(); }
-      if (isVoiceEnabled) {
-        audio.currentTime = video.currentTime;
-        audio.play().catch(e => console.log('Audio autoplay blocked:', e));
-      }
-    });
-
-    video.addEventListener('pause', () => {
-      audio.pause();
-    });
-
-    video.addEventListener('seeking', () => {
-      audio.currentTime = video.currentTime;
-    });
-
     video.addEventListener('timeupdate', () => {
       const cur = video.currentTime;
-      // Drift correction (keep within 0.3s)
-      if (isVoiceEnabled && !audio.paused && Math.abs(audio.currentTime - cur) > 0.35) {
-        audio.currentTime = cur;
-      }
-
-      // Update Subtitle
       const found = subtitles.find(s => cur >= s.start && cur < s.end);
       if (found) {
         subtitleText.innerText = found.text;
       }
     });
 
-    // Voice Toggle Function
-    function toggleVoice() {
-      isVoiceEnabled = !isVoiceEnabled;
-      const icon = document.getElementById('voiceIcon');
-      const text = document.getElementById('voiceStatusText');
-      const btn = document.getElementById('voiceToggleBtn');
-
-      if (isVoiceEnabled) {
-        audio.currentTime = video.currentTime;
-        if (!video.paused) audio.play();
-        icon.className = "fa-solid fa-volume-high";
-        text.innerText = "음성 해설 켜짐";
-        btn.className = "px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg shadow transition-colors flex items-center gap-1.5 cursor-pointer";
-      } else {
-        audio.pause();
-        icon.className = "fa-solid fa-volume-xmark text-slate-300";
-        text.innerText = "음성 해설 꺼짐";
-        btn.className = "px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition-colors border border-slate-700 flex items-center gap-1.5 cursor-pointer";
-      }
+    function seekVideo(seconds) {
+      if (clipAudio) { clipAudio.pause(); }
+      video.currentTime = seconds;
+      video.play();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Play Individual Scene Audio Clip
     function playClip(url) {
       video.pause();
-      audio.pause();
       if (clipAudio) { clipAudio.pause(); }
       clipAudio = new Audio(url);
       clipAudio.play();

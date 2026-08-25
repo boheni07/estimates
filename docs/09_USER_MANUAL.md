@@ -5,7 +5,9 @@
 ## 🎬 시연 동영상 및 인터랙티브 워크스루 플레이어
 
 * **🎥 [시연 동영상 인터랙티브 플레이어 열기 (HTML)](./DEMO_VIDEO_PLAYER.html)**: 브라우저에서 전체 시연 비디오 재생 및 단계별 타임라인 탐색 지원
-* **📹 [동영상 원본 파일 직접 다운로드 (WebM 1440x900 HD)](./videos/system_demo_walkthrough.webm)**
+* **📹 [고화질 MP4 동영상 파일 다운로드 (1440x900 HD, H.264/AAC 음성 내장)](./videos/system_demo_walkthrough.mp4)** (모든 기기/플레이어 호환, 1.4MB)
+* **📹 [WebM 동영상 파일 다운로드 (1440x900 HD)](./videos/system_demo_walkthrough.webm)**
+* **🎙️ [한국어 AI 성우 음성 내레이션 파일 (MP3)](./videos/system_demo_voiceover.mp3)**
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
