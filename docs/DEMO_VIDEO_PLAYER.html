@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT/SW 통합 견적 관리 시스템 - 사용 매뉴얼 시연 동영상</title>
+  <title>IT/SW 통합 견적 관리 시스템 - 음성 해설 시연 동영상</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -12,8 +12,8 @@
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen">
-  <!-- Top Navigation Header -->
-  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+  <!-- Top Header -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="p-2 bg-indigo-600 rounded-xl text-white shadow-md shadow-indigo-500/20">
@@ -21,7 +21,10 @@
         </div>
         <div>
           <h1 class="font-bold text-base text-white tracking-tight">IT/SW 통합 견적 관리 시스템</h1>
-          <p class="text-xs text-indigo-400 font-semibold">공식 사용 매뉴얼 시연 비디오 (Interactive Walkthrough Demo)</p>
+          <p class="text-xs text-indigo-400 font-semibold flex items-center gap-1.5">
+            <i class="fa-solid fa-volume-high text-emerald-400 animate-pulse"></i>
+            한국어 AI 음성 해설 탑재 시연 비디오 (AI Voiceover Walkthrough)
+          </p>
         </div>
       </div>
       <div class="flex items-center gap-3 text-xs">
@@ -36,175 +39,284 @@
   </header>
 
   <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-    <!-- Video Player Section -->
+    <!-- Video & Voice Player Section -->
     <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between flex-wrap gap-2">
-        <div class="flex items-center gap-2">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-2.5">
           <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-          <h2 class="text-lg font-bold text-white tracking-tight">전체 기능 풀 워크스루 시연 동영상 (1440x900 HD)</h2>
+          <h2 class="text-lg font-bold text-white tracking-tight">전체 기능 시연 비디오 + 전문 성우 음성 해설</h2>
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            음성 내레이션 자동 동기화
+          </span>
         </div>
-        <span class="text-xs font-mono text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700">
-          Duration: ~1 Min | Format: WebM / HTML5 Video
-        </span>
+        
+        <!-- Audio Controls -->
+        <div class="flex items-center gap-2">
+          <button 
+            id="voiceToggleBtn" 
+            onclick="toggleVoice()"
+            class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg shadow transition-colors flex items-center gap-1.5 cursor-pointer"
+          >
+            <i class="fa-solid fa-volume-high" id="voiceIcon"></i>
+            <span id="voiceStatusText">음성 해설 켜짐</span>
+          </button>
+          <a href="./videos/system_demo_voiceover.mp3" download class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition-colors border border-slate-700">
+            <i class="fa-solid fa-file-audio mr-1"></i> 음성 MP3 다운로드
+          </a>
+        </div>
       </div>
 
-      <!-- HTML5 Video Container -->
-      <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-slate-800 shadow-inner">
+      <!-- Video Player Wrapper -->
+      <div class="relative aspect-video w-full rounded-xl overflow-hidden bg-black border border-slate-800 shadow-inner group">
         <video 
           id="demoVideo"
           controls 
           autoplay 
           muted 
-          loop
           playsinline 
           class="w-full h-full object-contain"
         >
           <source src="./videos/system_demo_walkthrough.webm" type="video/webm">
           브라우저가 HTML5 비디오 태그를 지원하지 않습니다.
         </video>
+
+        <!-- Hidden Audio Element for Perfect Sync -->
+        <audio id="demoAudio" preload="auto">
+          <source src="./videos/system_demo_voiceover.mp3" type="audio/mp3">
+        </audio>
+
+        <!-- Real-time Live Subtitle Banner -->
+        <div id="subtitleBox" class="absolute bottom-14 inset-x-8 text-center pointer-events-none transition-opacity duration-300">
+          <div class="inline-block bg-black/85 backdrop-blur text-white text-sm md:text-base font-semibold px-6 py-2.5 rounded-full border border-slate-700 shadow-2xl">
+            <i class="fa-solid fa-quote-left text-xs text-indigo-400 mr-2"></i>
+            <span id="subtitleText">IT/SW 통합 견적 관리 시스템 시연을 시작합니다.</span>
+            <i class="fa-solid fa-quote-right text-xs text-indigo-400 ml-2"></i>
+          </div>
+        </div>
       </div>
 
       <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
-        <p>💡 비디오 컨트롤러를 통해 재생/일시정지, 배속 조절(1.5x, 2x), 전체화면 시청이 가능합니다.</p>
+        <p>💡 비디오 재생 버튼을 누르면 전문 AI 성우의 한국어 음성 해설이 영상 진행에 맞춰 자동 동기화되어 재생됩니다.</p>
         <a href="./videos/system_demo_walkthrough.webm" download class="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1">
-          <i class="fa-solid fa-download"></i> 동영상 원본 다운로드 (.webm)
+          <i class="fa-solid fa-download"></i> 동영상 원본 (.webm) 다운로드
         </a>
       </div>
     </div>
 
-    <!-- Step by Step Scene Gallery -->
+    <!-- Step by Step Scene Gallery with Audio Clips -->
     <div class="space-y-4">
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-          <i class="fa-solid fa-film text-indigo-400"></i> 주요 시연 장면 타임라인 (Timeline Walkthrough)
+          <i class="fa-solid fa-film text-indigo-400"></i> 주요 시연 장면 및 개별 음성 설명 (Scene by Scene)
         </h2>
-        <span class="text-xs text-slate-400">총 9단계 주요 기능 시연</span>
+        <span class="text-xs text-slate-400">각 카드의 [음성 듣기] 버튼을 누르면 해당 장면의 해설만 청취할 수 있습니다.</span>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <!-- Step 1 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
-          <div class="aspect-video bg-slate-950 overflow-hidden relative">
-            <img src="./videos/step1_login.png" alt="Step 1 Login" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-              Scene 01
-            </span>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <div class="aspect-video bg-slate-950 overflow-hidden relative">
+              <img src="./videos/step1_login.png" alt="Step 1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+                Scene 01 (00:00)
+              </span>
+            </div>
+            <div class="p-4 space-y-1.5">
+              <h3 class="font-bold text-sm text-white">1. ID/PW 사용자 인증 로그인</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                "먼저 아이디와 비밀번호를 입력하여 시스템에 안전하게 로그인합니다."
+              </p>
+            </div>
           </div>
-          <div class="p-4 space-y-1">
-            <h3 class="font-bold text-sm text-white">1. ID/PW 사용자 인증 로그인</h3>
-            <p class="text-xs text-slate-400">JWT 기반 보안 세션 발급 및 관리자/직원 계정 로그인</p>
+          <div class="p-4 pt-0">
+            <button onclick="playClip('./videos/scene1_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+            </button>
           </div>
         </div>
 
         <!-- Step 2 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
-          <div class="aspect-video bg-slate-950 overflow-hidden relative">
-            <img src="./videos/step2_dashboard.png" alt="Step 2 Dashboard" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-              Scene 02
-            </span>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <div class="aspect-video bg-slate-950 overflow-hidden relative">
+              <img src="./videos/step2_dashboard.png" alt="Step 2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+                Scene 02 (00:06)
+              </span>
+            </div>
+            <div class="p-4 space-y-1.5">
+              <h3 class="font-bold text-sm text-white">2. 통합 견적 대시보드 및 KPI</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                "메인 대시보드에서 총 견적 금액, 수주 성공률, 상태별 통계 및 최근 발행 이력을 확인합니다."
+              </p>
+            </div>
           </div>
-          <div class="p-4 space-y-1">
-            <h3 class="font-bold text-sm text-white">2. 통합 견적 대시보드 및 KPI</h3>
-            <p class="text-xs text-slate-400">총 견적액, 수주 성공률, 상태별 통계 및 최근 발행 이력</p>
+          <div class="p-4 pt-0">
+            <button onclick="playClip('./videos/scene2_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+            </button>
           </div>
         </div>
 
         <!-- Step 3 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
-          <div class="aspect-video bg-slate-950 overflow-hidden relative">
-            <img src="./videos/step3_sidebar_collapsed.png" alt="Step 3 Sidebar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-              Scene 03
-            </span>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <div class="aspect-video bg-slate-950 overflow-hidden relative">
+              <img src="./videos/step3_sidebar_collapsed.png" alt="Step 3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+                Scene 03 (00:12)
+              </span>
+            </div>
+            <div class="p-4 space-y-1.5">
+              <h3 class="font-bold text-sm text-white">3. 좌측 메뉴 접기/펼치기</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                "상단 토글 버튼을 누르면 메뉴가 콤팩트하게 접히며, 호버 시 툴팁으로 메뉴명이 안내됩니다."
+              </p>
+            </div>
           </div>
-          <div class="p-4 space-y-1">
-            <h3 class="font-bold text-sm text-white">3. 좌측 메뉴 접기/펼치기</h3>
-            <p class="text-xs text-slate-400">아이콘 중심 컴팩트 뷰 전환 및 호버 툴팁, 상태 유지</p>
+          <div class="p-4 pt-0">
+            <button onclick="playClip('./videos/scene3_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+            </button>
           </div>
         </div>
 
         <!-- Step 4 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
-          <div class="aspect-video bg-slate-950 overflow-hidden relative">
-            <img src="./videos/step4_projects_crm.png" alt="Step 4 Projects CRM" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-              Scene 04
-            </span>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <div class="aspect-video bg-slate-950 overflow-hidden relative">
+              <img src="./videos/step4_projects_crm.png" alt="Step 4" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+                Scene 04 (00:17)
+              </span>
+            </div>
+            <div class="p-4 space-y-1.5">
+              <h3 class="font-bold text-sm text-white">4. 프로젝트 전담 연락망 관리</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                "고객사별 전담 담당 부서, 담당자명, 직책, 연락처, 이메일을 체계적으로 관리합니다."
+              </p>
+            </div>
           </div>
-          <div class="p-4 space-y-1">
-            <h3 class="font-bold text-sm text-white">4. 프로젝트 전담 연락망 관리</h3>
-            <p class="text-xs text-slate-400">고객사별 프로젝트 담당부서, 담당자명, 직책, 연락처, 이메일</p>
+          <div class="p-4 pt-0">
+            <button onclick="playClip('./videos/scene4_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+            </button>
           </div>
         </div>
 
         <!-- Step 5 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
-          <div class="aspect-video bg-slate-950 overflow-hidden relative">
-            <img src="./videos/step5_estimate_new.png" alt="Step 5 New Estimate" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-              Scene 05
-            </span>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <div class="aspect-video bg-slate-950 overflow-hidden relative">
+              <img src="./videos/step5_estimate_new.png" alt="Step 5" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+                Scene 05 (00:23)
+              </span>
+            </div>
+            <div class="p-4 space-y-1.5">
+              <h3 class="font-bold text-sm text-white">5. 신규 스마트 견적서 생성</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                "고객사와 프로젝트를 지정하고 견적서 제목을 입력하여 스마트 견적서를 생성합니다."
+              </p>
+            </div>
           </div>
-          <div class="p-4 space-y-1">
-            <h3 class="font-bold text-sm text-white">5. 신규 견적서 생성</h3>
-            <p class="text-xs text-slate-400">고객사 및 프로젝트 지정 후 스마트 견적서 즉시 생성</p>
+          <div class="p-4 pt-0">
+            <button onclick="playClip('./videos/scene5_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+            </button>
           </div>
         </div>
 
         <!-- Step 6 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
-          <div class="aspect-video bg-slate-950 overflow-hidden relative">
-            <img src="./videos/step6_estimate_editor.png" alt="Step 6 Estimate Editor" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-              Scene 06
-            </span>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <div class="aspect-video bg-slate-950 overflow-hidden relative">
+              <img src="./videos/step6_estimate_editor.png" alt="Step 6" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+                Scene 06 (00:29)
+              </span>
+            </div>
+            <div class="p-4 space-y-1.5">
+              <h3 class="font-bold text-sm text-white">6. 2줄 품목 & 슬림 플로팅 요율</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                "2026 KOSA 노임단가 자동 연동, 2줄 카드형 품목 및 스크롤 시 플로팅 요율 실시간 계산."
+              </p>
+            </div>
           </div>
-          <div class="p-4 space-y-1">
-            <h3 class="font-bold text-sm text-white">6. 2줄 카드 품목 & 플로팅 요율</h3>
-            <p class="text-xs text-slate-400">KOSA 인건비, 2줄 물품 카드, 슬림 플로팅 요율 패널 실시간 계산</p>
+          <div class="p-4 pt-0">
+            <button onclick="playClip('./videos/scene6_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+            </button>
           </div>
         </div>
 
         <!-- Step 7 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
-          <div class="aspect-video bg-slate-950 overflow-hidden relative">
-            <img src="./videos/step7_a4_print_preview.png" alt="Step 7 A4 Print" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-              Scene 07
-            </span>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <div class="aspect-video bg-slate-950 overflow-hidden relative">
+              <img src="./videos/step7_a4_print_preview.png" alt="Step 7" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+                Scene 07 (00:43)
+              </span>
+            </div>
+            <div class="p-4 space-y-1.5">
+              <h3 class="font-bold text-sm text-white">7. 공식 표준 A4 인쇄 / PDF</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                "공인 견적 총괄표와 SW인건비 산출서, 공급자 인감, 법적 근거가 완비된 A4 인쇄 뷰."
+              </p>
+            </div>
           </div>
-          <div class="p-4 space-y-1">
-            <h3 class="font-bold text-sm text-white">7. 공식 표준 A4 인쇄 / PDF</h3>
-            <p class="text-xs text-slate-400">견적 총괄표, SW인건비 산출서, 공급자 인감, 법적 근거 완비</p>
+          <div class="p-4 pt-0">
+            <button onclick="playClip('./videos/scene7_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+            </button>
           </div>
         </div>
 
         <!-- Step 8 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
-          <div class="aspect-video bg-slate-950 overflow-hidden relative">
-            <img src="./videos/step8_users_management.png" alt="Step 8 Users" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-              Scene 08
-            </span>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <div class="aspect-video bg-slate-950 overflow-hidden relative">
+              <img src="./videos/step8_users_management.png" alt="Step 8" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+                Scene 08 (00:52)
+              </span>
+            </div>
+            <div class="p-4 space-y-1.5">
+              <h3 class="font-bold text-sm text-white">8. 직원(사용자) 관리 (ADMIN)</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                "관리자 전용 직원 등록, 수정, 삭제 및 관리자/일반 사용자 권한 제어."
+              </p>
+            </div>
           </div>
-          <div class="p-4 space-y-1">
-            <h3 class="font-bold text-sm text-white">8. 직원(사용자) 관리 (ADMIN)</h3>
-            <p class="text-xs text-slate-400">직원 등록, 수정, 삭제 및 관리자/일반 권한 제어</p>
+          <div class="p-4 pt-0">
+            <button onclick="playClip('./videos/scene8_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+            </button>
           </div>
         </div>
 
         <!-- Step 9 -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group">
-          <div class="aspect-video bg-slate-950 overflow-hidden relative">
-            <img src="./videos/step9_audit_logs.png" alt="Step 9 Audit Logs" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
-              Scene 09
-            </span>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-indigo-500/50 transition-all group flex flex-col justify-between">
+          <div>
+            <div class="aspect-video bg-slate-950 overflow-hidden relative">
+              <img src="./videos/step9_audit_logs.png" alt="Step 9" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              <span class="absolute top-2 left-2 bg-indigo-600/90 text-white text-[11px] font-bold px-2 py-0.5 rounded shadow">
+                Scene 09 (00:59)
+              </span>
+            </div>
+            <div class="p-4 space-y-1.5">
+              <h3 class="font-bold text-sm text-white">9. 열람 보안 감사 로그 (ADMIN)</h3>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                "열람, 인쇄, 엑셀, 타인수정 시도 이력을 실시간으로 모니터링합니다."
+              </p>
+            </div>
           </div>
-          <div class="p-4 space-y-1">
-            <h3 class="font-bold text-sm text-white">9. 열람 보안 감사 로그 (ADMIN)</h3>
-            <p class="text-xs text-slate-400">열람, 인쇄, 엑셀, 타인수정 시도 실시간 로깅 모니터링</p>
+          <div class="p-4 pt-0">
+            <button onclick="playClip('./videos/scene9_voice.mp3')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-semibold rounded-lg border border-slate-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-circle-play"></i> 이 장면 음성 듣기
+            </button>
           </div>
         </div>
       </div>
@@ -214,5 +326,88 @@
   <footer class="border-t border-slate-800 py-8 text-center text-xs text-slate-500 bg-slate-950">
     <p>IT/SW 통합 견적 관리 시스템 (Estimate Management System) &copy; 2026. All Rights Reserved.</p>
   </footer>
+
+  <!-- Synchronization Script -->
+  <script>
+    const video = document.getElementById('demoVideo');
+    const audio = document.getElementById('demoAudio');
+    const subtitleText = document.getElementById('subtitleText');
+    let isVoiceEnabled = true;
+    let clipAudio = null;
+
+    // Subtitle Timings
+    const subtitles = [
+      { start: 0, end: 6, text: "아이디와 비밀번호를 입력하여 시스템에 안전하게 로그인합니다." },
+      { start: 6, end: 12, text: "메인 대시보드에서 총 견적 금액, 수주 성공률, 상태별 통계 및 최근 발행 이력을 확인합니다." },
+      { start: 12, end: 17, text: "사이드바 상단 토글 버튼을 누르면 메뉴가 콤팩트하게 접히며, 호버 시 툴팁으로 안내됩니다." },
+      { start: 17, end: 23, text: "프로젝트 관리 화면에서 고객사별 전담 담당 부서, 담당자명, 직책, 연락처, 이메일을 관리합니다." },
+      { start: 23, end: 29, text: "새 견적서 작성 화면에서 대상 고객사와 프로젝트를 지정하고 스마트 견적서를 생성합니다." },
+      { start: 29, end: 43, text: "KOSA 노임단가 자동 연동, 2줄 카드 품목 입력 및 스크롤 시 플로팅 요율 패널 실시간 계산을 수행합니다." },
+      { start: 43, end: 52, text: "공식 인쇄 버튼을 누르면 견적 총괄표와 인건비 산출서, 공급자 인감, 법적 근거가 포함된 A4 뷰가 열립니다." },
+      { start: 52, end: 59, text: "관리자 전용 직원 관리 화면에서 직원 등록/수정/삭제 및 시스템 권한을 제어합니다." },
+      { start: 59, end: 70, text: "열람 감사 로그 화면에서 열람, 인쇄, 엑셀, 타인수정 시도 이력을 실시간 모니터링합니다." }
+    ];
+
+    // Synchronize Video and Audio Playback
+    video.addEventListener('play', () => {
+      if (clipAudio) { clipAudio.pause(); }
+      if (isVoiceEnabled) {
+        audio.currentTime = video.currentTime;
+        audio.play().catch(e => console.log('Audio autoplay blocked:', e));
+      }
+    });
+
+    video.addEventListener('pause', () => {
+      audio.pause();
+    });
+
+    video.addEventListener('seeking', () => {
+      audio.currentTime = video.currentTime;
+    });
+
+    video.addEventListener('timeupdate', () => {
+      const cur = video.currentTime;
+      // Drift correction (keep within 0.3s)
+      if (isVoiceEnabled && !audio.paused && Math.abs(audio.currentTime - cur) > 0.35) {
+        audio.currentTime = cur;
+      }
+
+      // Update Subtitle
+      const found = subtitles.find(s => cur >= s.start && cur < s.end);
+      if (found) {
+        subtitleText.innerText = found.text;
+      }
+    });
+
+    // Voice Toggle Function
+    function toggleVoice() {
+      isVoiceEnabled = !isVoiceEnabled;
+      const icon = document.getElementById('voiceIcon');
+      const text = document.getElementById('voiceStatusText');
+      const btn = document.getElementById('voiceToggleBtn');
+
+      if (isVoiceEnabled) {
+        audio.currentTime = video.currentTime;
+        if (!video.paused) audio.play();
+        icon.className = "fa-solid fa-volume-high";
+        text.innerText = "음성 해설 켜짐";
+        btn.className = "px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg shadow transition-colors flex items-center gap-1.5 cursor-pointer";
+      } else {
+        audio.pause();
+        icon.className = "fa-solid fa-volume-xmark text-slate-300";
+        text.innerText = "음성 해설 꺼짐";
+        btn.className = "px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition-colors border border-slate-700 flex items-center gap-1.5 cursor-pointer";
+      }
+    }
+
+    // Play Individual Scene Audio Clip
+    function playClip(url) {
+      video.pause();
+      audio.pause();
+      if (clipAudio) { clipAudio.pause(); }
+      clipAudio = new Audio(url);
+      clipAudio.play();
+    }
+  </script>
 </body>
 </html>
