@@ -1,0 +1,74 @@
+{
+  "scene1": {
+    "title": "로그인",
+    "audioDuration": 12.67,
+    "pad": 1.0,
+    "sceneDuration": 13.67,
+    "start": 0.0,
+    "end": 13.67
+  },
+  "scene2": {
+    "title": "대시보드",
+    "audioDuration": 9.53,
+    "pad": 1.0,
+    "sceneDuration": 10.53,
+    "start": 13.67,
+    "end": 24.2
+  },
+  "scene3": {
+    "title": "사이드바 접기/펼치기",
+    "audioDuration": 8.42,
+    "pad": 1.0,
+    "sceneDuration": 9.42,
+    "start": 24.2,
+    "end": 33.62
+  },
+  "scene4": {
+    "title": "프로젝트 전담 연락망",
+    "audioDuration": 9.55,
+    "pad": 1.0,
+    "sceneDuration": 10.55,
+    "start": 33.62,
+    "end": 44.18
+  },
+  "scene5": {
+    "title": "새 견적서 생성",
+    "audioDuration": 8.98,
+    "pad": 1.0,
+    "sceneDuration": 9.98,
+    "start": 44.18,
+    "end": 54.15
+  },
+  "scene6": {
+    "title": "견적서 작성 & 플로팅 요율",
+    "audioDuration": 19.15,
+    "pad": 1.5,
+    "sceneDuration": 20.65,
+    "start": 54.15,
+    "end": 74.8
+  },
+  "scene7": {
+    "title": "공식 표준 A4 인쇄",
+    "audioDuration": 11.28,
+    "pad": 1.0,
+    "sceneDuration": 12.28,
+    "start": 74.8,
+    "end": 87.08
+  },
+  "scene8": {
+    "title": "직원 관리 (ADMIN)",
+    "audioDuration": 7.54,
+    "pad": 1.0,
+    "sceneDuration": 8.54,
+    "start": 87.08,
+    "end": 95.62
+  },
+  "scene9": {
+    "title": "감사 로그 & 엔딩",
+    "audioDuration": 14.54,
+    "pad": 2.0,
+    "sceneDuration": 16.54,
+    "start": 95.62,
+    "end": 112.16
+  }
+}
