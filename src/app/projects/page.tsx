@@ -413,21 +413,19 @@ function ProjectsPageContent() {
           </button>
         </div>
       ) : viewMode === 'list' ? (
-        /* 1. 리스트형 테이블 뷰 (Default) */
+        /* 1. 리스트형 테이블 뷰 (Default - 2줄 통합 레이아웃) */
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600">
+          <div className="w-full overflow-hidden">
+            <table className="w-full text-left text-xs border-collapse">
               <thead className="bg-slate-50/90 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-tight">
                 <tr>
-                  <th className="py-3 px-3 text-center">상태</th>
-                  <th className="py-3 px-4">프로젝트(사업)명</th>
-                  <th className="py-3 px-3">고객사(발주처)</th>
-                  <th className="py-3 px-3">발주처 전담 담당자</th>
-                  <th className="py-3 px-3">사업 기간</th>
-                  <th className="py-3 px-3 text-center">견적 이력</th>
-                  <th className="py-3 px-3 text-right">최신 견적 합계</th>
-                  <th className="py-3 px-3 text-center">등록일자</th>
-                  <th className="py-3 px-4 text-center">관리</th>
+                  <th className="py-3 px-3 text-center w-20 whitespace-nowrap">상태</th>
+                  <th className="py-3 px-3.5 min-w-[260px]">프로젝트(사업)명 / 고객사(발주처)</th>
+                  <th className="py-3 px-3.5 min-w-[200px]">발주처 전담 담당자</th>
+                  <th className="py-3 px-3.5 w-36 whitespace-nowrap">사업 기간</th>
+                  <th className="py-3 px-3.5 text-right w-36 whitespace-nowrap">견적 현황</th>
+                  <th className="py-3 px-3 text-center w-28 whitespace-nowrap">등록일자</th>
+                  <th className="py-3 px-3.5 text-center w-28 whitespace-nowrap">관리</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -440,68 +438,111 @@ function ProjectsPageContent() {
                       key={p.id}
                       className="hover:bg-blue-50/40 transition-colors group"
                     >
-                      <td className="py-3 px-3 text-center">
+                      {/* 상태 배지 */}
+                      <td className="py-3 px-3 text-center align-middle whitespace-nowrap">
                         {getStatusBadgeUI(p.status)}
                       </td>
-                      <td className="py-3 px-4">
-                        <Link
-                          href={`/projects/${p.id}`}
-                          className="font-bold text-slate-900 text-sm hover:text-blue-600 flex items-center gap-2 group-hover:underline"
-                        >
-                          <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
-                            <FolderKanban className="w-3.5 h-3.5" />
+
+                      {/* 1. 프로젝트(사업)명 - 1줄 / 고객사(발주처) - 2줄 */}
+                      <td className="py-3 px-3.5 align-middle">
+                        {/* 1줄: 프로젝트(사업)명 */}
+                        <div className="mb-1">
+                          <Link
+                            href={`/projects/${p.id}`}
+                            className="font-bold text-slate-900 text-xs hover:text-blue-600 flex items-center gap-1.5 transition-colors line-clamp-1 group-hover:underline"
+                            title={p.title}
+                          >
+                            <div className="p-1 bg-blue-50 text-blue-600 rounded shrink-0">
+                              <FolderKanban className="w-3.5 h-3.5" />
+                            </div>
+                            <span>{p.title}</span>
+                          </Link>
+                        </div>
+                        {/* 2줄: 고객사(발주처) 및 개요 */}
+                        <div className="flex items-center gap-1.5 text-[11px] text-slate-600 flex-wrap">
+                          <div className="font-semibold text-slate-800 flex items-center gap-1 shrink-0">
+                            <Building2 className="w-3 h-3 text-blue-600" />
+                            <span>{p.company?.name || '고객사 미지정'}</span>
                           </div>
-                          <span>{p.title}</span>
-                        </Link>
-                        {p.description && (
-                          <p className="text-[11px] text-slate-400 truncate max-w-xs mt-0.5">
-                            {p.description}
-                          </p>
-                        )}
-                      </td>
-                      <td className="py-3 px-3">
-                        <div className="font-semibold text-slate-800 flex items-center gap-1.5">
-                          <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                          <span>{p.company?.name || '고객사 미지정'}</span>
+                          {p.description && (
+                            <>
+                              <span className="text-slate-300">|</span>
+                              <span className="text-slate-500 truncate max-w-xs" title={p.description}>
+                                {p.description}
+                              </span>
+                            </>
+                          )}
                         </div>
                       </td>
-                      <td className="py-3 px-3">
-                        <div className="font-semibold text-slate-800">
-                          {p.clientDept ? `[${p.clientDept}] ` : ''}
-                          {p.clientManager || '담당자 미지정'} {p.clientPosition || ''}
+
+                      {/* 2. 발주처 전담 담당자 (1줄: 부서/성명/직책, 2줄: 연락처/이메일) */}
+                      <td className="py-3 px-3.5 align-middle">
+                        <div className="font-semibold text-slate-800 text-xs flex items-center gap-1">
+                          <User className="w-3 h-3 text-slate-400 shrink-0" />
+                          <span>
+                            {p.clientDept ? `[${p.clientDept}] ` : ''}
+                            {p.clientManager || '담당자 미지정'} {p.clientPosition || ''}
+                          </span>
                         </div>
-                        {p.clientPhone && (
-                          <div className="font-mono text-[11px] text-slate-500 flex items-center gap-1">
-                            <Phone className="w-3 h-3 text-slate-400" />
-                            <span>{p.clientPhone}</span>
+                        <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-2 font-mono flex-wrap">
+                          {p.clientPhone && (
+                            <span className="flex items-center gap-0.5">
+                              <Phone className="w-2.5 h-2.5 text-slate-400" />
+                              <span>{p.clientPhone}</span>
+                            </span>
+                          )}
+                          {p.clientEmail && (
+                            <span className="flex items-center gap-0.5 text-blue-600">
+                              <Mail className="w-2.5 h-2.5 text-blue-400" />
+                              <span className="truncate max-w-[120px]">{p.clientEmail}</span>
+                            </span>
+                          )}
+                          {!p.clientPhone && !p.clientEmail && (
+                            <span className="text-slate-400 text-[10px] font-sans">연락처 미등록</span>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* 3. 사업기간 (1줄: 시작일자 ~, 2줄: 종료일자) */}
+                      <td className="py-3 px-3.5 align-middle font-mono text-[11px] whitespace-nowrap">
+                        {p.startDate || p.endDate ? (
+                          <div className="space-y-0.5">
+                            <div className="text-slate-700 flex items-center gap-1">
+                              <Calendar className="w-3 h-3 text-slate-400 shrink-0" />
+                              <span>시작: {p.startDate ? formatDate(p.startDate) : '미정'} ~</span>
+                            </div>
+                            <div className="text-slate-500 pl-4">
+                              <span>종료: {p.endDate ? formatDate(p.endDate) : '미정'}</span>
+                            </div>
                           </div>
-                        )}
-                        {p.clientEmail && (
-                          <div className="font-mono text-[11px] text-blue-600 flex items-center gap-1">
-                            <Mail className="w-3 h-3 text-slate-400" />
-                            <span className="truncate">{p.clientEmail}</span>
-                          </div>
-                        )}
-                      </td>
-                      <td className="py-3 px-3 text-[11px] text-slate-500 font-mono">
-                        {p.startDate ? `${formatDate(p.startDate)} ~ ${formatDate(p.endDate)}` : '-'}
-                      </td>
-                      <td className="py-3 px-3 text-center">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 font-mono">
-                          {estimates.length}건
-                        </span>
-                      </td>
-                      <td className="py-3 px-3 text-right font-mono font-bold text-slate-900 text-sm">
-                        {latestEstimate ? (
-                          `₩${formatCurrency(latestEstimate.grandTotal)}`
                         ) : (
-                          <span className="text-slate-400 font-normal text-xs">-</span>
+                          <span className="text-slate-400">기간 미정</span>
                         )}
                       </td>
-                      <td className="py-3 px-3 text-center text-slate-400 text-[11px] font-mono">
+
+                      {/* 4. 견적 현황 (1줄: 최신 합계액, 2줄: 발행 건수) */}
+                      <td className="py-3 px-3.5 text-right align-middle whitespace-nowrap">
+                        <div className="font-mono font-bold text-slate-900 text-xs">
+                          {latestEstimate ? (
+                            `₩${formatCurrency(latestEstimate.grandTotal)}`
+                          ) : (
+                            <span className="text-slate-400 font-normal">-</span>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-slate-500 mt-0.5">
+                          <span className="inline-flex items-center px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-mono text-[10px]">
+                            견적 {estimates.length}건
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* 5. 등록일자 */}
+                      <td className="py-3 px-3 text-center text-slate-400 text-[11px] font-mono align-middle whitespace-nowrap">
                         {p.createdAt ? formatDate(p.createdAt) : '-'}
                       </td>
-                      <td className="py-3 px-4 text-center">
+
+                      {/* 6. 관리 버튼 */}
+                      <td className="py-3 px-3.5 text-center align-middle whitespace-nowrap">
                         <div className="flex items-center justify-center gap-1">
                           <Link
                             href={`/projects/${p.id}`}

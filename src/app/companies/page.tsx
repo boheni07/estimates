@@ -277,8 +277,8 @@ export default function CompaniesPage() {
       ) : viewMode === 'list' ? (
         /* 1. 리스트형 테이블 뷰 (Default) */
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600">
+          <div className="w-full overflow-hidden">
+            <table className="w-full text-left text-xs text-slate-600 border-collapse">
               <thead className="bg-slate-50/90 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-tight">
                 <tr>
                   <th className="py-3 px-4">고객사(법인)명</th>
