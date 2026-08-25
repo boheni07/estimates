@@ -88,7 +88,7 @@ export default function DashboardPage() {
               ₩{formatCurrency(summary.totalAmount)}
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              총 <span className="font-semibold text-slate-700">{summary.totalCount}건</span>의 견적서 발행
+              총 <span className="font-semibold text-slate-700">{summary.totalCount}건</span>의 견적서 (최종버전 기준)
             </p>
           </div>
         </div>
